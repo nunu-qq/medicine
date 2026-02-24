@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#f7e8f0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>くすり管理</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ══ THEMES ══ */
+:root {
+  --bg:#fdf6f9;--surface:#fff8fb;--surface2:#fdeef6;
+  --accent:#e8a0bf;--accent-dark:#c9729a;--accent-checked:#e0637e;
+  --header-grad:linear-gradient(135deg,#fce4ef,#ede0f7);
+  --text:#3a2a35;--text-sub:#8a6878;
+  --border:rgba(200,150,180,0.2);--shadow:0 2px 16px rgba(180,100,140,0.08);
+  --tab-shadow:0 2px 12px rgba(200,100,150,0.15);
+  --morning:#f5a84d;--night:#7d6fb0;--radius:16px;
+  --progress-grad:linear-gradient(90deg,var(--accent),var(--accent-checked));
+  --pill-grad:linear-gradient(135deg,var(--accent),var(--accent-dark));
+  --icon-stroke:#c9729a;
+}
+[data-theme="dark"]{
+  --bg:#111113;--surface:#1a1a1f;--surface2:#222228;
+  --accent:#8b7fff;--accent-dark:#6c5ce7;--accent-checked:#a29bfe;
+  --header-grad:linear-gradient(135deg,#16161e,#12121a);
+  --text:#f0f0f8;--text-sub:#9090b0;
+  --border:rgba(120,120,200,0.2);--shadow:0 2px 16px rgba(0,0,0,0.5);
+  --tab-shadow:0 2px 12px rgba(108,92,231,0.3);
+  --morning:#ffd580;--night:#a29bfe;
+  --progress-grad:linear-gradient(90deg,#8b7fff,#6c5ce7);
+  --pill-grad:linear-gradient(135deg,#8b7fff,#6c5ce7);
+  --icon-stroke:#a29bfe;
+}
+[data-theme="blue"]{
+  --bg:#f0f6ff;--surface:#f8fbff;--surface2:#e3eeff;
+  --accent:#74b9ff;--accent-dark:#0984e3;--accent-checked:#0652dd;
+  --header-grad:linear-gradient(135deg,#dbeafe,#c7d2fe);
+  --text:#1a2a4a;--text-sub:#5a7aaa;
+  --border:rgba(100,150,220,0.2);--shadow:0 2px 16px rgba(9,132,227,0.08);
+  --tab-shadow:0 2px 12px rgba(9,132,227,0.2);
+  --morning:#e67e22;--night:#6c5ce7;
+  --progress-grad:linear-gradient(90deg,#74b9ff,#0984e3);
+  --pill-grad:linear-gradient(135deg,#74b9ff,#0984e3);
+  --icon-stroke:#0984e3;
+}
+[data-theme="sage"]{
+  --bg:#f2f7f4;--surface:#f8fbf9;--surface2:#e4f0e8;
+  --accent:#74b48b;--accent-dark:#2d8653;--accent-checked:#218a4e;
+  --header-grad:linear-gradient(135deg,#d1fae5,#a7f3d0);
+  --text:#1a3328;--text-sub:#5a8070;
+  --border:rgba(80,160,110,0.2);--shadow:0 2px 16px rgba(45,134,83,0.08);
+  --tab-shadow:0 2px 12px rgba(45,134,83,0.2);
+  --morning:#e09b3d;--night:#7d6fb0;
+  --progress-grad:linear-gradient(90deg,#74b48b,#2d8653);
+  --pill-grad:linear-gradient(135deg,#74b48b,#2d8653);
+  --icon-stroke:#2d8653;
+}
+[data-theme="charcoal"]{
+  --bg:#181818;--surface:#222222;--surface2:#2a2a2a;
+  --accent:#e0b97a;--accent-dark:#c89846;--accent-checked:#d4a853;
+  --header-grad:linear-gradient(135deg,#1e1e1e,#181818);
+  --text:#f0ebe0;--text-sub:#a09070;
+  --border:rgba(160,140,100,0.18);--shadow:0 2px 16px rgba(0,0,0,0.6);
+  --tab-shadow:0 2px 12px rgba(200,152,70,0.2);
+  --morning:#e0b97a;--night:#9b8ec4;
+  --progress-grad:linear-gradient(90deg,#e0b97a,#c89846);
+  --pill-grad:linear-gradient(135deg,#e0b97a,#c89846);
+  --icon-stroke:#e0b97a;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:100px;transition:background .3s,color .3s}
+
+/* ── SVG Icon helper ── */
+.icon{width:20px;height:20px;display:block;stroke:var(--icon-stroke);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.icon-sm{width:16px;height:16px;stroke-width:1.8}
+.nav-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Header ── */
+.header{position:sticky;top:0;z-index:100;background:var(--header-grad);padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.header-title{font-size:18px;font-weight:900;color:var(--accent-dark);letter-spacing:-.3px}
+.header-date{font-size:12px;color:var(--text-sub);font-weight:500;margin-top:2px}
+.header-right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,opacity .15s}
+[data-theme="dark"] .icon-btn,[data-theme="charcoal"] .icon-btn{background:rgba(255,255,255,0.06)}
+.icon-btn:active{transform:scale(.9);opacity:.7}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:6px;padding:12px 16px 0;position:relative;z-index:1}
+.tab{flex:1;padding:9px 4px;border-radius:12px;border:1px solid var(--border);font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--text-sub)}
+.tab.active{background:var(--surface);color:var(--accent-dark);box-shadow:var(--tab-shadow);border-color:transparent}
+
+/* ── Pages ── */
+.section{padding:14px 16px;position:relative;z-index:1}
+.page{display:none}.page.active{display:block}
+
+/* ── Section headings ── */
+.page-title{font-size:17px;font-weight:900;color:var(--text);margin-bottom:3px}
+.page-sub{font-size:12px;color:var(--text-sub);margin-bottom:14px}
+
+/* ── Today ── */
+.time-block{margin-bottom:18px}
+.time-label{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.time-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.time-badge.morning{background:rgba(245,168,77,0.13);color:var(--morning)}
+.time-badge.night{background:rgba(125,111,176,0.13);color:var(--night)}
+.med-cards{display:flex;flex-direction:column;gap:7px}
+
+.med-card{background:var(--surface);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;border:1.5px solid transparent;box-shadow:var(--shadow);transition:all .22s cubic-bezier(.34,1.56,.64,1);cursor:pointer;position:relative;overflow:hidden}
+.med-card.checked{border-color:var(--accent-checked);background:var(--surface2);transform:scale(.985)}
+.med-card.checked .med-name{text-decoration:line-through;color:var(--text-sub)}
+.med-pill-dot{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.med-info{flex:1;min-width:0}
+.med-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.med-note{font-size:11px;color:var(--text-sub)}
+.check-circle{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.check-circle svg{width:14px;height:14px;stroke:transparent;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.med-card.checked .check-circle{background:var(--accent-checked);border-color:var(--accent-checked);box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.med-card.checked .check-circle svg{stroke:white}
+
+.progress-bar-wrap{background:var(--surface2);border-radius:12px;padding:12px 14px;margin-bottom:14px;border:1px solid var(--border)}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--text-sub);margin-bottom:7px}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--progress-grad);border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* ── Streak ── */
+.streak-card{background:var(--surface2);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:14px;margin-bottom:14px;border:1px solid var(--border)}
+.streak-num{font-size:40px;font-weight:900;color:var(--accent-dark);line-height:1;letter-spacing:-2px}
+.streak-label{font-size:12px;font-weight:700;color:var(--text-sub)}
+.streak-sub{font-size:11px;color:var(--text-sub);margin-top:2px}
+.week-dots{display:flex;gap:5px;margin-top:8px}
+.week-dot{width:28px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.week-dot-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.week-dot-circle.done{background:var(--pill-grad);color:white}
+.week-dot-circle.today{background:var(--surface);border:2px solid var(--accent-checked);color:var(--accent-checked)}
+.week-dot-circle.future{background:var(--surface);color:var(--text-sub);opacity:.35;border:1px solid var(--border)}
+.week-dot-circle.partial{background:var(--accent);color:white;opacity:.7}
+.week-dot-label{font-size:9px;color:var(--text-sub);font-weight:700}
+
+/* ── Pill sheet ── */
+.sheet-card{background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px;border:1px solid var(--border)}
+.sheet-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.sheet-name{font-size:15px;font-weight:900;color:var(--text)}
+.sheet-meta{font-size:11px;color:var(--text-sub);margin-top:2px}
+.sheet-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.sheet-badge.active{background:rgba(45,134,83,.12);color:#2d8653}
+.sheet-badge.rest{background:rgba(224,99,126,.12);color:#e0637e}
+.pill-grid{display:grid;gap:5px;margin-bottom:10px}
+.pill-cell{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;transition:all .18s;border:1.5px solid transparent}
+.pill-cell.taken{background:var(--pill-grad);color:white;box-shadow:0 1px 6px rgba(0,0,0,.15)}
+.pill-cell.today{background:var(--surface);border:2px solid var(--accent-checked);color:var(--accent-checked);animation:pulse-today 2s infinite}
+.pill-cell.future{background:var(--surface2);color:var(--text-sub);opacity:.45}
+.pill-cell.rest-day{background:var(--surface2);color:var(--text-sub);font-size:7px;opacity:.6}
+@keyframes pulse-today{0%,100%{box-shadow:0 0 0 3px rgba(224,99,126,.1)}50%{box-shadow:0 0 0 7px rgba(224,99,126,.15)}}
+.sheet-day-count{font-size:26px;font-weight:900;color:var(--accent-dark);line-height:1;letter-spacing:-1px}
+.sheet-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:10px;color:var(--text-sub)}
+.legend-item{display:flex;align-items:center;gap:4px}
+.legend-dot{width:9px;height:9px;border-radius:50%}
+
+/* ── History ── */
+.history-filter-wrap{display:flex;gap:7px;overflow-x:auto;padding:0 0 10px;margin-bottom:6px;scrollbar-width:none}
+.history-filter-wrap::-webkit-scrollbar{display:none}
+.history-filter-btn{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:700;cursor:pointer;background:var(--surface);color:var(--text-sub);transition:all .18s;white-space:nowrap}
+.history-filter-btn.active{background:var(--accent-dark);color:white;border-color:var(--accent-dark)}
+.history-cal-wrap{background:var(--surface);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:14px;border:1px solid var(--border)}
+.med-stats-card{background:var(--surface);border-radius:14px;padding:14px;box-shadow:var(--shadow);margin-bottom:10px;border:1px solid var(--border)}
+.med-stats-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.med-stats-dot{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.med-stats-rate{font-size:24px;font-weight:900;color:var(--accent-dark);letter-spacing:-1px}
+.med-stats-label{font-size:11px;color:var(--text-sub);margin-top:2px}
+
+/* ── Settings ── */
+.settings-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;border:1px solid var(--border)}
+.settings-card-title{padding:10px 14px 8px;font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--text-sub);text-transform:uppercase;background:var(--surface2);border-bottom:1px solid var(--border)}
+.setting-row{display:flex;align-items:center;padding:13px 14px;gap:12px;border-bottom:1px solid var(--border);cursor:pointer}
+.setting-row:last-child{border-bottom:none}
+.setting-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.setting-label{flex:1}
+.setting-label-main{font-size:14px;font-weight:700}
+.setting-label-sub{font-size:11px;color:var(--text-sub);margin-top:1px}
+.backup-info{font-size:11px;color:var(--text-sub);padding:8px 14px 10px;line-height:1.6}
+
+.theme-picks{display:flex;gap:10px;padding:12px 14px;flex-wrap:wrap}
+.theme-pick{width:42px;height:42px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:transform .18s,border-color .18s;display:flex;align-items:center;justify-content:center}
+.theme-pick.selected{border-color:var(--text)}
+.theme-pick:active{transform:scale(.85)}
+.theme-pick-inner{width:30px;height:30px;border-radius:50%}
+
+.toggle{position:relative;width:42px;height:23px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-track{position:absolute;inset:0;border-radius:12px;background:var(--border);transition:background .25s;cursor:pointer}
+.toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:white;transition:transform .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle input:checked+.toggle-track{background:var(--accent-dark)}
+.toggle input:checked+.toggle-track::after{transform:translateX(19px)}
+
+/* ── Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:22px 22px 18px 18px;padding:22px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;animation:slide-up .28s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slide-up{from{transform:translateY(80px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-title{font-size:18px;font-weight:900;color:var(--text);margin-bottom:18px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;color:var(--text-sub);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.form-input{width:100%;padding:10px 13px;border-radius:10px;border:1.5px solid var(--border);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--accent)}
+.color-picks{display:flex;gap:7px;flex-wrap:wrap}
+.color-pick{width:34px;height:34px;border-radius:50%;cursor:pointer;transition:transform .18s;border:2.5px solid transparent}
+.color-pick:active{transform:scale(.85)}
+.color-pick.selected{border-color:var(--text)}
+.timing-picks{display:flex;gap:7px}
+.timing-pick{flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--border);text-align:center;cursor:pointer;font-size:12px;font-weight:700;color:var(--text-sub);transition:all .18s;background:var(--surface)}
+.timing-pick.selected{border-color:var(--accent-dark);background:var(--surface2);color:var(--accent-dark)}
+.btn-row{display:flex;gap:8px;margin-top:18px}
+.btn{flex:1;padding:12px;border-radius:12px;border:none;font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .14s}
+.btn-primary{background:var(--pill-grad);color:white;box-shadow:0 3px 14px rgba(0,0,0,.18)}
+.btn-secondary{background:var(--surface2);color:var(--text-sub)}
+.btn:active{transform:scale(.95)}
+
+/* ── Bottom Nav ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:76px;background:var(--surface);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text-sub);font-size:10px;font-weight:700;transition:color .14s;padding:6px 4px}
+.nav-item.active{color:var(--accent-dark)}
+.nav-icon{line-height:1;display:flex;align-items:center;justify-content:center}
+.nav-dot{width:3px;height:3px;border-radius:2px;background:var(--accent);display:none}
+.nav-item.active .nav-dot{display:block}
+
+/* ── FAB ── */
+.fab{position:fixed;bottom:86px;right:16px;width:50px;height:50px;border-radius:14px;background:var(--pill-grad);color:white;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,.22);cursor:pointer;z-index:90;border:none;transition:transform .18s}
+.fab:active{transform:scale(.9)}
+
+input[type="time"]{padding:7px 11px;border-radius:9px;border:1.5px solid var(--border);font-size:13px;font-family:'Zen Kaku Gothic New',sans-serif;color:var(--text);background:var(--bg);outline:none}
+input[type="time"]:focus{border-color:var(--accent)}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+.med-card.just-checked{animation:pop .28s cubic-bezier(.34,1.56,.64,1)}
+</style>
+</head>
+<body data-theme="pink">
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div>
+    <div class="header-title">くすり管理</div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+  <div class="header-right">
+    <!-- Bell icon -->
+    <div class="icon-btn" onclick="openNotifModal()">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TABS ══ -->
+<div class="tabs">
+  <button class="tab active" onclick="showPage('today',this)">今日</button>
+  <button class="tab" onclick="showPage('pill',this)">ピル</button>
+  <button class="tab" onclick="showPage('history',this)">履歴</button>
+  <button class="tab" onclick="showPage('settings',this)">設定</button>
+</div>
+
+<!-- ══ TODAY ══ -->
+<div class="page active" id="page-today">
+  <div class="section">
+    <div class="streak-card">
+      <div>
+        <div class="streak-num" id="streakNum">0</div>
+        <div class="streak-label">日連続達成</div>
+        <div class="streak-sub">最高: <span id="bestStreak">0</span>日</div>
+      </div>
+      <div style="flex:1"><div class="week-dots" id="weekDots"></div></div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>今日の服薬</span><span id="progressText">0/0 完了</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="time-block">
+      <div class="time-label">
+        <div class="time-badge morning">
+          <!-- Sun icon -->
+          <svg class="icon icon-sm" style="stroke:var(--morning)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          朝
+        </div>
+      </div>
+      <div class="med-cards" id="morningCards"></div>
+    </div>
+    <div class="time-block">
+      <div class="time-label">
+        <div class="time-badge night">
+          <!-- Moon icon -->
+          <svg class="icon icon-sm" style="stroke:var(--night)" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          夜
+        </div>
+      </div>
+      <div class="med-cards" id="nightCards"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PILL ══ -->
+<div class="page" id="page-pill">
+  <div class="section">
+    <div class="page-title">ピルシート管理</div>
+    <div class="page-sub">錠剤をタップして服薬を記録</div>
+    <div id="pillSheets"></div>
+    <button class="btn btn-primary" style="width:100%;padding:13px;border-radius:14px;margin-top:6px" onclick="openAddSheetModal()">+ 新しいシートを始める</button>
+  </div>
+</div>
+
+<!-- ══ HISTORY ══ -->
+<div class="page" id="page-history">
+  <div class="section">
+    <div class="page-title">服薬履歴</div>
+    <div class="page-sub">薬を選んで個別の服薬率を確認</div>
+    <div class="history-filter-wrap" id="historyFilters"></div>
+    <div id="historyContent"></div>
+  </div>
+</div>
+
+<!-- ══ SETTINGS ══ -->
+<div class="page" id="page-settings">
+  <div class="section">
+    <!-- Theme -->
+    <div class="settings-card">
+      <div class="settings-card-title">テーマ</div>
+      <div class="theme-picks" id="themePicks"></div>
+    </div>
+    <!-- Notifications -->
+    <div class="settings-card">
+      <div class="settings-card-title">通知設定</div>
+      <div class="setting-row">
+        <div class="setting-icon" style="background:rgba(245,168,77,.12)">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">朝の通知</div><div class="setting-label-sub">リマインダー時刻</div></div>
+        <input type="time" id="morningNotifTime" value="08:00" onchange="saveSettings()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-icon" style="background:rgba(125,111,176,.12)">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">夜の通知</div><div class="setting-label-sub">リマインダー時刻</div></div>
+        <input type="time" id="nightNotifTime" value="22:00" onchange="saveSettings()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-icon" style="background:rgba(80,200,120,.12)">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">ブラウザ通知</div><div class="setting-label-sub">許可が必要です</div></div>
+        <label class="toggle"><input type="checkbox" id="notifEnabled" onchange="toggleNotifications(this)"><div class="toggle-track"></div></label>
+      </div>
+    </div>
+    <!-- Meds -->
+    <div class="settings-card">
+      <div class="settings-card-title">薬の管理</div>
+      <div id="medSettingsList"></div>
+      <div class="setting-row" onclick="openAddMedModal()">
+        <div class="setting-icon" style="background:var(--surface2)">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">薬を追加する</div></div>
+        <svg class="icon icon-sm" style="stroke:var(--text-sub)" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+    <!-- Backup -->
+    <div class="settings-card">
+      <div class="settings-card-title">バックアップ・引き継ぎ</div>
+      <div class="backup-info">⚠️ Chromeの「サイトデータ削除」や端末変更でデータが消えます。定期的にエクスポートして保存しておきましょう。</div>
+      <div class="setting-row" onclick="exportData()">
+        <div class="setting-icon" style="background:rgba(9,132,227,.1)">
+          <svg class="icon" style="stroke:#0984e3" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">データをエクスポート</div><div class="setting-label-sub">JSONファイルをダウンロード</div></div>
+      </div>
+      <div class="setting-row" onclick="document.getElementById('importInput').click()">
+        <div class="setting-icon" style="background:rgba(45,134,83,.1)">
+          <svg class="icon" style="stroke:#2d8653" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">データをインポート</div><div class="setting-label-sub">バックアップから復元</div></div>
+      </div>
+      <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+    <!-- Danger -->
+    <div class="settings-card">
+      <div class="settings-card-title">データ操作</div>
+      <div class="setting-row" onclick="resetToday()">
+        <div class="setting-icon" style="background:var(--surface2)">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">今日のチェックをリセット</div></div>
+      </div>
+      <div class="setting-row" onclick="if(confirm('全データを削除しますか？'))clearAllData()">
+        <div class="setting-icon" style="background:rgba(229,57,53,.1)">
+          <svg class="icon" style="stroke:#e53935" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main" style="color:#e53935">全データを削除</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="openAddMedModal()">
+  <svg style="width:22px;height:22px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="showPage('today',null,true)">
+    <div class="nav-icon">
+      <!-- Pill icon -->
+      <svg viewBox="0 0 24 24"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7.07-7.07l7 7a5 5 0 0 1-7.07 7.07z"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg>
+    </div>
+    <span>今日</span><div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="showPage('pill',null,true)">
+    <div class="nav-icon">
+      <!-- Grid / calendar icon -->
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <span>ピル</span><div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="showPage('history',null,true)">
+    <div class="nav-icon">
+      <!-- Bar chart icon -->
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    </div>
+    <span>履歴</span><div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="showPage('settings',null,true)">
+    <div class="nav-icon">
+      <!-- Settings gear icon -->
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+    <span>設定</span><div class="nav-dot"></div>
+  </div>
+</div>
+
+<!-- ADD MED MODAL -->
+<div class="modal-overlay" id="addMedModal">
+  <div class="modal">
+    <div class="modal-title">薬を追加</div>
+    <div class="form-group"><label class="form-label">名前</label><input class="form-input" id="newMedName" placeholder="例：フリウェル、ビタミンD..."></div>
+    <div class="form-group"><label class="form-label">メモ（用量など）</label><input class="form-input" id="newMedNote" placeholder="例：1錠、食後に..."></div>
+    <div class="form-group">
+      <label class="form-label">服薬タイミング</label>
+      <div class="timing-picks">
+        <div class="timing-pick selected" id="tp-morning" onclick="selectTiming('morning')">朝</div>
+        <div class="timing-pick" id="tp-night" onclick="selectTiming('night')">夜</div>
+        <div class="timing-pick" id="tp-both" onclick="selectTiming('both')">両方</div>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">色</label><div class="color-picks" id="colorPicks"></div></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeModal('addMedModal')">キャンセル</button>
+      <button class="btn btn-primary" onclick="addMed()">追加する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SHEET MODAL -->
+<div class="modal-overlay" id="addSheetModal">
+  <div class="modal">
+    <div class="modal-title">新しいシート</div>
+    <div class="form-group"><label class="form-label">シート名</label><input class="form-input" id="newSheetName" placeholder="例：フリウェル28 シート2..."></div>
+    <div class="form-group">
+      <label class="form-label">タイプ</label>
+      <div class="timing-picks">
+        <div class="timing-pick selected" id="st-28" onclick="selectSheetType(28)">28錠<br><small style="font-weight:400;color:var(--text-sub)">休薬なし</small></div>
+        <div class="timing-pick" id="st-21" onclick="selectSheetType(21)">21錠<br><small style="font-weight:400;color:var(--text-sub)">7日休薬</small></div>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">シート開始日</label><input type="date" class="form-input" id="newSheetStart"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeModal('addSheetModal')">キャンセル</button>
+      <button class="btn btn-primary" onclick="addSheet()">開始する</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIF MODAL -->
+<div class="modal-overlay" id="notifModal">
+  <div class="modal">
+    <div class="modal-title">通知設定</div>
+    <div class="form-group"><label class="form-label">朝の通知時間</label><input type="time" class="form-input" id="modalMorningTime" value="08:00"></div>
+    <div class="form-group"><label class="form-label">夜の通知時間</label><input type="time" class="form-input" id="modalNightTime" value="22:00"></div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:12px;line-height:1.65">ブラウザの通知許可が必要です。Androidのホーム画面に追加するとアプリのように起動できます。</p>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeModal('notifModal')">閉じる</button>
+      <button class="btn btn-primary" onclick="saveNotifSettings()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const THEMES=[
+  {id:'pink',label:'ピンク',colors:['#f48fb1','#e8a0bf']},
+  {id:'blue',label:'ブルー',colors:['#74b9ff','#0984e3']},
+  {id:'sage',label:'グリーン',colors:['#74b48b','#2d8653']},
+  {id:'dark',label:'ダーク',colors:['#8b7fff','#6c5ce7']},
+  {id:'charcoal',label:'チャコール',colors:['#444','#e0b97a']},
+];
+
+const COLORS=[
+  {name:'pink',bg:'linear-gradient(135deg,#f48fb1,#e91e8c)',hex:'#f48fb1'},
+  {name:'lavender',bg:'linear-gradient(135deg,#b39ddb,#7e57c2)',hex:'#b39ddb'},
+  {name:'mint',bg:'linear-gradient(135deg,#80cbc4,#26a69a)',hex:'#80cbc4'},
+  {name:'peach',bg:'linear-gradient(135deg,#ffcc80,#ff7043)',hex:'#ffcc80'},
+  {name:'sky',bg:'linear-gradient(135deg,#81d4fa,#0288d1)',hex:'#81d4fa'},
+  {name:'yellow',bg:'linear-gradient(135deg,#fff176,#f9a825)',hex:'#fff176'},
+  {name:'navy',bg:'linear-gradient(135deg,#5c7bc4,#283593)',hex:'#5c7bc4'},
+  {name:'slate',bg:'linear-gradient(135deg,#90a4ae,#37474f)',hex:'#90a4ae'},
+  {name:'coral',bg:'linear-gradient(135deg,#ff8a80,#c62828)',hex:'#ff8a80'},
+  {name:'lime',bg:'linear-gradient(135deg,#ccff90,#558b2f)',hex:'#ccff90'},
+];
+
+let state={meds:[],sheets:[],checks:{},pillTaken:{},settings:{morningTime:'08:00',nightTime:'22:00',notifEnabled:false,theme:'pink'},streak:0,bestStreak:0};
+let selectedTiming='morning',selectedSheetType=28,selectedColor=COLORS[0],historyFilterMed='all';
+
+const TODAY=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+
+function loadState(){
+  try{
+    const s=localStorage.getItem('okusuri-v3');
+    if(s){state={...state,...JSON.parse(s)};state.settings={morningTime:'08:00',nightTime:'22:00',notifEnabled:false,theme:'pink',...state.settings};}
+    else{
+      state.meds=[
+        {id:'m1',name:'フリウェル',note:'1錠',timing:'night',color:COLORS[0]},
+        {id:'m2',name:'ビタミンD',note:'1000IU',timing:'morning',color:COLORS[2]},
+        {id:'m3',name:'マグネシウム',note:'1錠',timing:'night',color:COLORS[1]},
+        {id:'m4',name:'鉄分',note:'1錠 食後',timing:'morning',color:COLORS[3]},
+        {id:'m5',name:'葉酸',note:'1錠',timing:'morning',color:COLORS[4]},
+        {id:'m6',name:'オメガ3',note:'2錠 食後',timing:'night',color:COLORS[5]},
+      ];
+      state.sheets=[{id:'s1',name:'フリウェル28 シート1',type:28,startDate:(()=>{const d=new Date();d.setDate(d.getDate()-14);return d.toISOString().split('T')[0]})()}];
+    }
+  }catch(e){}
+}
+function saveState(){localStorage.setItem('okusuri-v3',JSON.stringify(state));}
+
+function applyTheme(id){
+  document.body.setAttribute('data-theme',id);
+  state.settings.theme=id;
+  document.querySelectorAll('.theme-pick').forEach(el=>el.classList.toggle('selected',el.dataset.theme===id));
+}
+
+function renderThemePicker(){
+  const w=document.getElementById('themePicks');w.innerHTML='';
+  THEMES.forEach(t=>{
+    const el=document.createElement('div');
+    el.className='theme-pick'+(state.settings.theme===t.id?' selected':'');
+    el.dataset.theme=t.id;el.title=t.label;
+    el.innerHTML=`<div class="theme-pick-inner" style="background:linear-gradient(135deg,${t.colors[0]},${t.colors[1]})"></div>`;
+    el.onclick=()=>{applyTheme(t.id);saveState();};
+    w.appendChild(el);
+  });
+}
+
+function showPage(name,tabEl,fromNav){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(tabEl)tabEl.classList.add('active');
+  const idx=['today','pill','history','settings'].indexOf(name);
+  if(idx>=0)document.querySelectorAll('.nav-item')[idx].classList.add('active');
+  if(fromNav)document.querySelectorAll('.tab')[idx].classList.add('active');
+  if(name==='today')renderToday();
+  if(name==='pill')renderPillSheets();
+  if(name==='history')renderHistory();
+  if(name==='settings')renderSettingsPage();
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+// TODAY
+function renderToday(){
+  const today=TODAY();
+  if(!state.checks[today])state.checks[today]={};
+  renderMedCards('morningCards',state.meds.filter(m=>m.timing==='morning'||m.timing==='both'),today);
+  renderMedCards('nightCards',state.meds.filter(m=>m.timing==='night'||m.timing==='both'),today);
+  updateProgress(today);renderWeekDots();updateStreak();
+  const d=new Date(),days=['日','月','火','水','木','金','土'];
+  document.getElementById('headerDate').textContent=`${d.getMonth()+1}月${d.getDate()}日 (${days[d.getDay()]})`;
+}
+// Check circle SVG
+const CHECK_SVG=`<svg viewBox="0 0 14 14" style="width:14px;height:14px;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><polyline points="2,7 5.5,11 12,3"/></svg>`;
+
+function renderMedCards(id,meds,today){
+  const c=document.getElementById(id);c.innerHTML='';
+  if(!meds.length){c.innerHTML='<div style="padding:10px 0;font-size:12px;color:var(--text-sub);text-align:center">薬が登録されていません</div>';return;}
+  meds.forEach(med=>{
+    const checked=!!(state.checks[today]&&state.checks[today][med.id]);
+    const div=document.createElement('div');
+    div.className='med-card'+(checked?' checked':'');div.id='card-'+med.id;
+    div.innerHTML=`
+      <div class="med-pill-dot" style="background:${med.color.bg}">
+        <svg style="width:18px;height:18px;stroke:white;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7.07-7.07l7 7a5 5 0 0 1-7.07 7.07z"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg>
+      </div>
+      <div class="med-info">
+        <div class="med-name">${med.name}</div>
+        <div class="med-note">${med.note||''}</div>
+      </div>
+      <div class="check-circle" style="${checked?'background:var(--accent-checked);border-color:var(--accent-checked);box-shadow:0 2px 10px rgba(0,0,0,.15)':''}">
+        <svg viewBox="0 0 14 14" style="width:14px;height:14px;fill:none;stroke:${checked?'white':'transparent'};stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><polyline points="2,7 5.5,11 12,3"/></svg>
+      </div>
+    `;
+    div.onclick=()=>toggleMed(med.id,today);
+    c.appendChild(div);
+  });
+}
+
+function toggleMed(medId,today){
+  if(!state.checks[today])state.checks[today]={};
+  state.checks[today][medId]=!state.checks[today][medId];
+  saveState();
+  const card=document.getElementById('card-'+medId);if(!card)return;
+  const checked=state.checks[today][medId];
+  card.classList.toggle('checked',checked);
+  card.classList.add('just-checked');setTimeout(()=>card.classList.remove('just-checked'),320);
+  const circle=card.querySelector('.check-circle');
+  circle.style.cssText=checked?'background:var(--accent-checked);border-color:var(--accent-checked);box-shadow:0 2px 10px rgba(0,0,0,.15)':'';
+  const svg=circle.querySelector('svg');
+  svg.style.stroke=checked?'white':'transparent';
+  updateProgress(today);updateStreak();
+}
+function updateProgress(today){
+  const total=state.meds.length;
+  if(!total){document.getElementById('progressFill').style.width='0%';document.getElementById('progressText').textContent='0/0 完了';return;}
+  const done=state.meds.filter(m=>state.checks[today]&&state.checks[today][m.id]).length;
+  document.getElementById('progressFill').style.width=Math.round(done/total*100)+'%';
+  document.getElementById('progressText').textContent=`${done}/${total} 完了`;
+}
+function isDayComplete(ds){if(!state.meds.length)return false;const c=state.checks[ds]||{};return state.meds.every(m=>c[m.id]);}
+function isDayPartial(ds){const c=state.checks[ds]||{};return state.meds.some(m=>c[m.id]);}
+function isMedChecked(ds,medId){return!!(state.checks[ds]&&state.checks[ds][medId]);}
+function updateStreak(){
+  let s=0;let d=new Date();const today=TODAY();
+  while(s<366){const ds=d.toISOString().split('T')[0];if(ds===today&&!isDayComplete(ds))break;if(ds!==today&&!isDayComplete(ds))break;s++;d.setDate(d.getDate()-1);}
+  state.streak=s;if(s>(state.bestStreak||0))state.bestStreak=s;
+  document.getElementById('streakNum').textContent=s;
+  document.getElementById('bestStreak').textContent=state.bestStreak||0;
+  saveState();
+}
+function renderWeekDots(){
+  const today=TODAY(),c=document.getElementById('weekDots');c.innerHTML='';
+  const days=['日','月','火','水','木','金','土'];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split('T')[0];
+    let cls='future';
+    if(ds===today)cls='today';
+    else if(ds<today){if(isDayComplete(ds))cls='done';else if(isDayPartial(ds))cls='partial';}
+    const dot=document.createElement('div');dot.className='week-dot';
+    dot.innerHTML=`<div class="week-dot-circle ${cls}">${d.getDate()}</div><div class="week-dot-label">${days[d.getDay()]}</div>`;
+    c.appendChild(dot);
+  }
+}
+
+// PILL SHEETS
+function renderPillSheets(){
+  const c=document.getElementById('pillSheets');c.innerHTML='';
+  if(!state.sheets.length){c.innerHTML='<div style="text-align:center;padding:22px;color:var(--text-sub);font-size:13px">シートを追加してください</div>';return;}
+  state.sheets.forEach(sheet=>{
+    const start=new Date(sheet.startDate),today=new Date();
+    const diffDays=Math.floor((today-start)/864e5);
+    const cycleDay=diffDays%28;
+    const isRestDay=sheet.type===21&&cycleDay>=21;
+    const currentPill=Math.min(cycleDay+1,sheet.type);
+    if(!state.pillTaken[sheet.id])state.pillTaken[sheet.id]={};
+    const card=document.createElement('div');card.className='sheet-card';
+    let gridHTML=`<div class="pill-grid" style="grid-template-columns:repeat(7,1fr)">`;
+    for(let i=1;i<=sheet.type;i++){
+      const dayDiff=diffDays-(i-1);
+      let cls=dayDiff>0||state.pillTaken[sheet.id][i]?'taken':cycleDay===i-1?'today':'future';
+      gridHTML+=`<div class="pill-cell ${cls}" onclick="takePill('${sheet.id}',${i})">${i}</div>`;
+    }
+    if(sheet.type===21)for(let i=0;i<7;i++)gridHTML+=`<div class="pill-cell rest-day">休</div>`;
+    gridHTML+='</div>';
+    const statusBadge=isRestDay?'<span class="sheet-badge rest">休薬日</span>':'<span class="sheet-badge active">服薬中</span>';
+    card.innerHTML=`
+      <div class="sheet-header">
+        <div><div class="sheet-name">${sheet.name}</div><div class="sheet-meta">${sheet.type}錠シート · 開始 ${sheet.startDate}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          ${statusBadge}
+          <span style="font-size:11px;color:var(--text-sub);cursor:pointer" onclick="deleteSheet('${sheet.id}')">削除</span>
+        </div>
+      </div>
+      ${gridHTML}
+      <div style="display:flex;align-items:center;gap:12px;margin-top:12px">
+        <div>
+          <div class="sheet-day-count">${isRestDay?'休薬':currentPill}</div>
+          <div style="font-size:11px;color:var(--text-sub)">${isRestDay?`${cycleDay-20}日目`:`錠目 / ${sheet.type}錠`}</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:700;color:var(--text-sub);margin-bottom:4px">${isRestDay?'次のシートまで':'シート進捗'}</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${isRestDay?Math.round((cycleDay-20)/7*100):Math.round(currentPill/sheet.type*100)}%"></div></div>
+        </div>
+      </div>
+      <div class="sheet-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--pill-grad)"></div>服薬済み</div>
+        <div class="legend-item"><div class="legend-dot" style="border:1.5px solid var(--accent-checked);background:var(--surface)"></div>今日</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--surface2)"></div>これから</div>
+        ${sheet.type===21?'<div class="legend-item"><div class="legend-dot" style="background:var(--surface2);opacity:.6"></div>休薬</div>':''}
+      </div>
+    `;
+    c.appendChild(card);
+  });
+}
+function takePill(sheetId,pillNum){
+  if(!state.pillTaken[sheetId])state.pillTaken[sheetId]={};
+  state.pillTaken[sheetId][pillNum]=!state.pillTaken[sheetId][pillNum];
+  saveState();renderPillSheets();
+}
+function deleteSheet(id){
+  if(!confirm('このシートを削除しますか？'))return;
+  state.sheets=state.sheets.filter(s=>s.id!==id);delete state.pillTaken[id];saveState();renderPillSheets();
+}
+
+// HISTORY
+function renderHistory(){renderHistoryFilters();renderHistoryContent();}
+function renderHistoryFilters(){
+  const w=document.getElementById('historyFilters');w.innerHTML='';
+  const allBtn=document.createElement('button');
+  allBtn.className='history-filter-btn'+(historyFilterMed==='all'?' active':'');
+  allBtn.textContent='全体';
+  allBtn.onclick=()=>{historyFilterMed='all';renderHistory();};w.appendChild(allBtn);
+  state.meds.forEach(med=>{
+    const btn=document.createElement('button');
+    btn.className='history-filter-btn'+(historyFilterMed===med.id?' active':'');
+    btn.textContent=med.name;
+    btn.onclick=()=>{historyFilterMed=med.id;renderHistory();};w.appendChild(btn);
+  });
+}
+function renderHistoryContent(){
+  const c=document.getElementById('historyContent');c.innerHTML='';
+  const med=historyFilterMed==='all'?null:state.meds.find(m=>m.id===historyFilterMed);
+  if(med)renderMedStats(c,med);
+  renderHistoryCalendar(c,med);
+}
+function renderMedStats(container,med){
+  const card=document.createElement('div');card.className='med-stats-card';
+  let taken=0,total=0;const today=new Date();
+  for(let i=0;i<30;i++){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const ds=d.toISOString().split('T')[0];
+    if(ds>TODAY())continue;total++;if(isMedChecked(ds,med.id))taken++;
+  }
+  const rate=total?Math.round(taken/total*100):0;
+  let maxStreak=0,cur=0;
+  for(let i=29;i>=0;i--){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const ds=d.toISOString().split('T')[0];
+    if(isMedChecked(ds,med.id)){cur++;if(cur>maxStreak)maxStreak=cur;}else cur=0;
+  }
+  card.innerHTML=`
+    <div class="med-stats-header">
+      <div class="med-stats-dot" style="background:${med.color.bg}">
+        <svg style="width:16px;height:16px;stroke:white;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7.07-7.07l7 7a5 5 0 0 1-7.07 7.07z"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:900;color:var(--text)">${med.name}</div>
+        <div style="font-size:11px;color:var(--text-sub)">${med.note||''} · ${med.timing==='morning'?'朝':med.timing==='night'?'夜':'朝・夜'}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:18px;margin-top:4px">
+      <div><div class="med-stats-rate">${rate}%</div><div class="med-stats-label">服薬率（30日）</div></div>
+      <div><div class="med-stats-rate">${taken}/${total}</div><div class="med-stats-label">服薬日数</div></div>
+      <div><div class="med-stats-rate">${maxStreak}</div><div class="med-stats-label">最長連続</div></div>
+    </div>
+    <div class="progress-bar" style="margin-top:10px"><div class="progress-fill" style="width:${rate}%;background:${med.color.bg}"></div></div>
+  `;
+  container.appendChild(card);
+}
+function renderHistoryCalendar(container,filterMed){
+  const wrap=document.createElement('div');wrap.className='history-cal-wrap';
+  const title=document.createElement('div');
+  title.style.cssText='font-size:14px;font-weight:900;color:var(--text);margin-bottom:12px';
+  title.textContent=filterMed?`${filterMed.name} の30日間`:'全体 · 過去30日間';
+  wrap.appendChild(title);
+  const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(7,1fr);gap:4px';
+  ['日','月','火','水','木','金','土'].forEach(dl=>{
+    const el=document.createElement('div');
+    el.style.cssText='text-align:center;font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0';
+    el.textContent=dl;grid.appendChild(el);
+  });
+  const today=new Date(),start=new Date(today);start.setDate(start.getDate()-29);
+  for(let i=0;i<start.getDay();i++)grid.appendChild(document.createElement('div'));
+  for(let i=0;i<30;i++){
+    const d=new Date(start);d.setDate(d.getDate()+i);
+    const ds=d.toISOString().split('T')[0];
+    const isToday=ds===TODAY(),isFuture=ds>TODAY();
+    let bg='var(--surface2)',color='var(--text-sub)',opacity=isFuture?.28:1;
+    if(!isFuture){
+      if(filterMed){if(isMedChecked(ds,filterMed.id)){bg=filterMed.color.bg;color='white';}}
+      else{if(isDayComplete(ds)){bg='var(--pill-grad)';color='white';}else if(isDayPartial(ds)){bg='var(--accent)';color='white';opacity=.65;}}
+    }
+    const cell=document.createElement('div');
+    cell.style.cssText=`aspect-ratio:1;border-radius:50%;background:${bg};color:${color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:${opacity};${isToday?'box-shadow:0 0 0 2.5px var(--accent)':''}`;
+    cell.textContent=d.getDate();grid.appendChild(cell);
+  }
+  wrap.appendChild(grid);
+  const legend=document.createElement('div');legend.style.cssText='display:flex;gap:12px;margin-top:12px;flex-wrap:wrap';
+  if(filterMed){
+    legend.innerHTML=`<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:12px;height:12px;border-radius:50%;background:${filterMed.color.bg}"></div>服薬済み</div><div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:12px;height:12px;border-radius:50%;background:var(--surface2)"></div>未服薬</div>`;
+  }else{
+    legend.innerHTML=`<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:12px;height:12px;border-radius:50%;background:var(--pill-grad)"></div>全部OK</div><div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:12px;height:12px;border-radius:50%;background:var(--accent);opacity:.65"></div>一部のみ</div><div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:12px;height:12px;border-radius:50%;background:var(--surface2)"></div>未服薬</div>`;
+  }
+  wrap.appendChild(legend);container.appendChild(wrap);
+}
+
+// SETTINGS
+function renderSettingsPage(){
+  renderThemePicker();
+  const list=document.getElementById('medSettingsList');list.innerHTML='';
+  state.meds.forEach(med=>{
+    const row=document.createElement('div');row.className='setting-row';
+    const tl=med.timing==='morning'?'朝':med.timing==='night'?'夜':'朝・夜';
+    row.innerHTML=`
+      <div class="setting-icon" style="background:${med.color.hex}20">
+        <svg style="width:16px;height:16px;stroke:${med.color.hex};fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7.07-7.07l7 7a5 5 0 0 1-7.07 7.07z"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg>
+      </div>
+      <div class="setting-label">
+        <div class="setting-label-main">${med.name}</div>
+        <div class="setting-label-sub">${med.note||''} · ${tl}</div>
+      </div>
+      <div onclick="deleteMed('${med.id}')" style="cursor:pointer;padding:4px 6px">
+        <svg style="width:16px;height:16px;stroke:#e53935;fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+  document.getElementById('morningNotifTime').value=state.settings.morningTime;
+  document.getElementById('nightNotifTime').value=state.settings.nightTime;
+  document.getElementById('notifEnabled').checked=state.settings.notifEnabled;
+}
+function deleteMed(id){
+  if(!confirm('この薬を削除しますか？'))return;
+  state.meds=state.meds.filter(m=>m.id!==id);saveState();renderSettingsPage();renderToday();
+}
+function saveSettings(){
+  state.settings.morningTime=document.getElementById('morningNotifTime').value;
+  state.settings.nightTime=document.getElementById('nightNotifTime').value;
+  saveState();scheduleNotifications();
+}
+function toggleNotifications(el){
+  if(el.checked){
+    Notification.requestPermission().then(perm=>{
+      state.settings.notifEnabled=perm==='granted';el.checked=state.settings.notifEnabled;saveState();
+      if(state.settings.notifEnabled){scheduleNotifications();alert('通知を許可しました');}
+      else alert('通知が許可されませんでした。ブラウザの設定を確認してください。');
+    });
+  }else{state.settings.notifEnabled=false;saveState();}
+}
+function scheduleNotifications(){
+  if(!('Notification'in window)||Notification.permission!=='granted')return;
+  if(window._nt)window._nt.forEach(t=>clearTimeout(t));window._nt=[];
+  const scheduleFor=(ts,msg)=>{
+    const[h,m]=ts.split(':').map(Number),now=new Date(),tgt=new Date();
+    tgt.setHours(h,m,0,0);if(tgt<=now)tgt.setDate(tgt.getDate()+1);
+    const t=setTimeout(()=>{new Notification('くすり管理',{body:msg});scheduleFor(ts,msg);},tgt-now);
+    window._nt.push(t);
+  };
+  scheduleFor(state.settings.morningTime,'朝の薬を飲む時間です');
+  scheduleFor(state.settings.nightTime,'夜の薬を飲む時間です');
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  const d=new Date();
+  a.download=`kusuri-backup-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  a.href=url;a.click();URL.revokeObjectURL(url);
+}
+function importData(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const parsed=JSON.parse(e.target.result);
+      if(!parsed.meds||!Array.isArray(parsed.meds))throw new Error();
+      if(!confirm(`バックアップから復元しますか？\n薬: ${parsed.meds.length}種類\n現在のデータは上書きされます。`))return;
+      state={...state,...parsed};state.settings={morningTime:'08:00',nightTime:'22:00',notifEnabled:false,theme:'pink',...state.settings};
+      saveState();applyTheme(state.settings.theme);renderToday();renderSettingsPage();alert('復元しました');
+    }catch{alert('ファイルが正しくありません');}
+  };
+  reader.readAsText(file);event.target.value='';
+}
+function openAddMedModal(){
+  selectedTiming='morning';selectedColor=COLORS[0];
+  document.getElementById('newMedName').value='';document.getElementById('newMedNote').value='';
+  document.querySelectorAll('.timing-pick').forEach(t=>t.classList.remove('selected'));
+  document.getElementById('tp-morning').classList.add('selected');
+  const cp=document.getElementById('colorPicks');cp.innerHTML='';
+  COLORS.forEach((c,i)=>{
+    const el=document.createElement('div');el.className='color-pick'+(i===0?' selected':'');
+    el.style.background=c.bg;
+    el.onclick=()=>{selectedColor=c;document.querySelectorAll('.color-pick').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');};
+    cp.appendChild(el);
+  });
+  openModal('addMedModal');
+}
+function selectTiming(t){selectedTiming=t;['morning','night','both'].forEach(x=>document.getElementById('tp-'+x).classList.toggle('selected',x===t));}
+function addMed(){
+  const name=document.getElementById('newMedName').value.trim();
+  if(!name){alert('名前を入力してください');return;}
+  state.meds.push({id:'m'+Date.now(),name,note:document.getElementById('newMedNote').value.trim(),timing:selectedTiming,color:selectedColor});
+  saveState();closeModal('addMedModal');renderToday();renderSettingsPage();
+}
+function openAddSheetModal(){
+  selectedSheetType=28;document.getElementById('newSheetName').value='';document.getElementById('newSheetStart').value=TODAY();
+  document.getElementById('st-28').classList.add('selected');document.getElementById('st-21').classList.remove('selected');
+  openModal('addSheetModal');
+}
+function selectSheetType(n){selectedSheetType=n;document.getElementById('st-28').classList.toggle('selected',n===28);document.getElementById('st-21').classList.toggle('selected',n===21);}
+function addSheet(){
+  const name=document.getElementById('newSheetName').value.trim();if(!name){alert('シート名を入力してください');return;}
+  const startDate=document.getElementById('newSheetStart').value;if(!startDate){alert('開始日を選択してください');return;}
+  state.sheets.push({id:'s'+Date.now(),name,type:selectedSheetType,startDate});
+  saveState();closeModal('addSheetModal');renderPillSheets();
+}
+function openNotifModal(){document.getElementById('modalMorningTime').value=state.settings.morningTime;document.getElementById('modalNightTime').value=state.settings.nightTime;openModal('notifModal');}
+function saveNotifSettings(){
+  state.settings.morningTime=document.getElementById('modalMorningTime').value;
+  state.settings.nightTime=document.getElementById('modalNightTime').value;
+  document.getElementById('morningNotifTime').value=state.settings.morningTime;
+  document.getElementById('nightNotifTime').value=state.settings.nightTime;
+  saveState();scheduleNotifications();closeModal('notifModal');
+}
+function resetToday(){if(!confirm('今日のチェックをリセットしますか？'))return;state.checks[TODAY()]={};saveState();renderToday();}
+function clearAllData(){localStorage.removeItem('okusuri-v3');location.reload();}
+
+loadState();applyTheme(state.settings.theme||'pink');renderToday();
+if(state.settings.notifEnabled)scheduleNotifications();
+</script>
+</body>
+</html>
