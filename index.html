@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#f4f4f4">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="くすり管理">
+<link rel="manifest" href="manifest.json">
+<title>くすり管理</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ══ THEMES ══ */
+:root {
+  --bg:#f4f4f4;--surface:#fafafa;--surface2:#ebebeb;
+  --accent:#999999;--accent-dark:#555555;--accent-checked:#333333;
+  --header-grad:linear-gradient(135deg,#ececec,#e4e4e4);
+  --text:#1e1e1e;--text-sub:#888888;
+  --border:rgba(0,0,0,0.08);--shadow:0 2px 12px rgba(0,0,0,0.06);
+  --tab-shadow:0 2px 8px rgba(0,0,0,0.08);
+  --morning:#c07820;--noon:#2a8c60;--night:#6060a8;--prn:#c04040;--radius:16px;
+  --progress-grad:linear-gradient(90deg,#888888,#444444);
+  --pill-grad:linear-gradient(135deg,#888888,#444444);
+  --icon-stroke:#555555;
+  --icon-stroke:#c9729a;
+}
+[data-theme="dark"]{
+  --bg:#111113;--surface:#1a1a1f;--surface2:#222228;
+  --accent:#8b7fff;--accent-dark:#bdb5ff;--accent-checked:#cdc8ff;
+  --header-grad:linear-gradient(135deg,#16161e,#12121a);
+  --text:#f0f0f8;--text-sub:#9090b0;
+  --border:rgba(120,120,200,0.2);--shadow:0 2px 16px rgba(0,0,0,0.5);
+  --tab-shadow:0 2px 12px rgba(108,92,231,0.3);
+  --morning:#ffd580;--noon:#7ee8c0;--night:#cdc8ff;--prn:#ff7070;
+  --progress-grad:linear-gradient(90deg,#8b7fff,#bdb5ff);
+  --pill-grad:linear-gradient(135deg,#8b7fff,#6c5ce7);
+  --icon-stroke:#cdc8ff;
+}
+[data-theme="blue"]{
+  --bg:#f0f6ff;--surface:#f8fbff;--surface2:#e3eeff;
+  --accent:#74b9ff;--accent-dark:#0984e3;--accent-checked:#0652dd;
+  --header-grad:linear-gradient(135deg,#dbeafe,#c7d2fe);
+  --text:#1a2a4a;--text-sub:#5a7aaa;
+  --border:rgba(100,150,220,0.2);--shadow:0 2px 16px rgba(9,132,227,0.08);
+  --tab-shadow:0 2px 12px rgba(9,132,227,0.2);
+  --morning:#e67e22;--noon:#2ecc71;--night:#6c5ce7;--prn:#ff6b6b;
+  --progress-grad:linear-gradient(90deg,#74b9ff,#0984e3);
+  --pill-grad:linear-gradient(135deg,#74b9ff,#0984e3);
+  --icon-stroke:#0984e3;
+}
+[data-theme="sage"]{
+  --bg:#f2f7f4;--surface:#f8fbf9;--surface2:#e4f0e8;
+  --accent:#74b48b;--accent-dark:#2d8653;--accent-checked:#218a4e;
+  --header-grad:linear-gradient(135deg,#d1fae5,#a7f3d0);
+  --text:#1a3328;--text-sub:#5a8070;
+  --border:rgba(80,160,110,0.2);--shadow:0 2px 16px rgba(45,134,83,0.08);
+  --tab-shadow:0 2px 12px rgba(45,134,83,0.2);
+  --morning:#e09b3d;--noon:#1abc9c;--night:#7d6fb0;--prn:#e05c5c;
+  --progress-grad:linear-gradient(90deg,#74b48b,#2d8653);
+  --pill-grad:linear-gradient(135deg,#74b48b,#2d8653);
+  --icon-stroke:#2d8653;
+}
+/* 黒+グリーン */
+[data-theme="dark-green"]{
+  --bg:#0a1a1c;--surface:#0f2428;--surface2:#163038;
+  --accent:#2bbfb0;--accent-dark:#4dd9ca;--accent-checked:#7eeade;
+  --header-grad:linear-gradient(135deg,#0d1e22,#0a1a1c);
+  --text:#d4f0ee;--text-sub:#5a9090;
+  --border:rgba(43,191,176,0.18);--shadow:0 2px 16px rgba(0,0,0,0.7);
+  --tab-shadow:0 2px 12px rgba(43,191,176,0.15);
+  --morning:#e0c060;--noon:#2bbfb0;--night:#7eeade;--prn:#f07878;
+  --progress-grad:linear-gradient(90deg,#2bbfb0,#4dd9ca);
+  --pill-grad:linear-gradient(135deg,#1a8080,#2bbfb0);
+  --icon-stroke:#4dd9ca;
+}
+/* 黒+グレー */
+[data-theme="dark-gray"]{
+  --bg:#0e0e0e;--surface:#1a1a1a;--surface2:#242424;
+  --accent:#a0a0a8;--accent-dark:#d0d0dc;--accent-checked:#e8e8f0;
+  --header-grad:linear-gradient(135deg,#111111,#0e0e0e);
+  --text:#eeeeee;--text-sub:#888888;
+  --border:rgba(160,160,168,0.15);--shadow:0 2px 16px rgba(0,0,0,0.7);
+  --tab-shadow:0 2px 12px rgba(160,160,168,0.15);
+  --morning:#e0c070;--noon:#6ed4a8;--night:#d0d0dc;--prn:#ff8080;
+  --progress-grad:linear-gradient(90deg,#a0a0a8,#d0d0dc);
+  --pill-grad:linear-gradient(135deg,#606068,#909098);
+  --icon-stroke:#d0d0dc;
+}
+
+/* ライトグレー */
+[data-theme="warm-gray"]{
+  --bg:#f4f4f4;--surface:#fafafa;--surface2:#ebebeb;
+  --accent:#999999;--accent-dark:#555555;--accent-checked:#333333;
+  --header-grad:linear-gradient(135deg,#ececec,#e4e4e4);
+  --text:#1e1e1e;--text-sub:#888888;
+  --border:rgba(0,0,0,0.08);--shadow:0 2px 12px rgba(0,0,0,0.06);
+  --tab-shadow:0 2px 8px rgba(0,0,0,0.08);
+  --morning:#c07820;--noon:#2a8c60;--night:#6060a8;--prn:#c04040;
+  --progress-grad:linear-gradient(90deg,#888888,#444444);
+  --pill-grad:linear-gradient(135deg,#888888,#444444);
+  --icon-stroke:#555555;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:100px;transition:background .3s,color .3s}
+
+/* ── PIN LOCK ── */
+#pinLockScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;transition:background .3s}
+.pin-title{font-size:22px;font-weight:900;color:var(--accent-dark);margin-bottom:6px;text-align:center}
+.pin-sub{font-size:13px;color:var(--text-sub);margin-bottom:32px;text-align:center;line-height:1.6}
+.pin-dots{display:flex;gap:14px;margin-bottom:28px}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--accent);background:transparent;transition:background .15s}
+.pin-dot.filled{background:var(--accent)}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:260px}
+.pin-btn{height:64px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface);font-family:'Zen Kaku Gothic New',sans-serif;font-size:22px;font-weight:700;color:var(--text);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.pin-btn:active{transform:scale(.9);background:var(--surface2)}
+.pin-btn.del{font-size:16px;color:var(--text-sub)}
+.pin-err{font-size:12px;color:#e53935;margin-top:8px;height:16px;text-align:center}
+.pin-setup-note{font-size:11px;color:var(--text-sub);margin-top:16px;text-align:center;line-height:1.6;max-width:280px}
+
+/* ── Icons ── */
+.icon{width:20px;height:20px;display:block;stroke:var(--icon-stroke);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.icon-sm{width:16px;height:16px;stroke-width:1.8}
+.nav-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Header ── */
+.header{position:sticky;top:0;z-index:100;background:var(--header-grad);padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.header-title{font-size:18px;font-weight:900;color:var(--accent-dark);letter-spacing:-.3px}
+.header-date{font-size:12px;color:var(--text-sub);font-weight:500;margin-top:2px}
+.header-right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,opacity .15s}
+[data-theme="dark"] .icon-btn,[data-theme="dark-gray"] .icon-btn{background:rgba(255,255,255,0.06)}
+.icon-btn:active{transform:scale(.9);opacity:.7}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:6px;padding:12px 16px 0;position:relative;z-index:1}
+.tab{flex:1;padding:9px 4px;border-radius:12px;border:1px solid var(--border);font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--text-sub)}
+.tab.active{background:var(--surface);color:var(--accent-dark);box-shadow:var(--tab-shadow);border-color:transparent}
+
+/* ── Pages ── */
+.section{padding:14px 16px;position:relative;z-index:1}
+.page{display:none}.page.active{display:block}
+.page-title{font-size:17px;font-weight:900;color:var(--text);margin-bottom:3px}
+.page-sub{font-size:12px;color:var(--text-sub);margin-bottom:14px}
+
+/* ── Date Nav ── */
+.date-nav{display:flex;align-items:center;gap:8px;margin-bottom:14px;background:var(--surface);border-radius:14px;padding:10px 14px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.date-nav-btn{width:32px;height:32px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.date-nav-btn:active{transform:scale(.9)}
+.date-nav-btn[disabled]{opacity:.3;cursor:not-allowed;pointer-events:none}
+.date-nav-center{flex:1;text-align:center}
+.date-nav-label{font-size:14px;font-weight:900;color:var(--text)}
+.date-nav-sub{font-size:11px;color:var(--text-sub);margin-top:1px}
+
+/* ── Today ── */
+.time-block{margin-bottom:18px}
+.time-label{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.time-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.time-badge.morning{background:rgba(245,168,77,0.13);color:var(--morning)}
+.time-badge.noon{background:rgba(76,175,137,0.13);color:var(--noon)}
+.time-badge.night{background:rgba(125,111,176,0.13);color:var(--night)}
+.time-badge.prn{background:rgba(224,92,92,0.13);color:var(--prn)}
+
+/* PRN count selector */
+.prn-count-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.prn-count-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-sub);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.prn-count-btn.active{background:var(--accent-checked);border-color:var(--accent-checked);color:white}
+.prn-count-btn:active{transform:scale(.9)}
+.med-cards{display:flex;flex-direction:column;gap:7px}
+.med-card{background:var(--surface);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;border:1.5px solid transparent;box-shadow:var(--shadow);transition:all .22s cubic-bezier(.34,1.56,.64,1);cursor:pointer;position:relative;overflow:hidden}
+.med-card.checked{border-color:var(--accent-checked);background:var(--surface2);transform:scale(.985)}
+.med-card.checked .med-name{text-decoration:line-through;color:var(--text-sub)}
+.med-pill-dot{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.med-info{flex:1;min-width:0}
+.med-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.med-note{font-size:11px;color:var(--text-sub)}
+.check-circle{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.med-card.checked .check-circle{background:var(--accent-checked);border-color:var(--accent-checked);box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.med-card.checked .check-circle svg{stroke:white}
+.progress-bar-wrap{background:var(--surface2);border-radius:12px;padding:12px 14px;margin-bottom:14px;border:1px solid var(--border)}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--text-sub);margin-bottom:7px}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--progress-grad);border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* ── Streak ── */
+.streak-card{background:var(--surface2);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:14px;margin-bottom:14px;border:1px solid var(--border)}
+.streak-num{font-size:40px;font-weight:900;color:var(--accent-dark);line-height:1;letter-spacing:-2px}
+.streak-label{font-size:12px;font-weight:700;color:var(--text-sub)}
+.streak-sub{font-size:11px;color:var(--text-sub);margin-top:2px}
+.week-dots{display:flex;gap:5px;margin-top:8px}
+.week-dot{width:28px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.week-dot-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer}
+.week-dot-circle.done{background:var(--pill-grad);color:white}
+.week-dot-circle.today{background:var(--surface);border:2px solid var(--accent-checked);color:var(--accent-checked)}
+.week-dot-circle.viewing{background:var(--surface);border:2px dashed var(--accent);color:var(--accent)}
+.week-dot-circle.future{background:var(--surface);color:var(--text-sub);opacity:.35;border:1px solid var(--border)}
+.week-dot-circle.partial{background:var(--accent);color:white;opacity:.7}
+.week-dot-label{font-size:9px;color:var(--text-sub);font-weight:700}
+
+/* ── Pill sheet ── */
+.sheet-card{background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px;border:1px solid var(--border)}
+.sheet-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.sheet-name{font-size:15px;font-weight:900;color:var(--text)}
+.sheet-meta{font-size:11px;color:var(--text-sub);margin-top:2px}
+.sheet-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.sheet-badge.active{background:rgba(45,134,83,.12);color:#2d8653}
+.sheet-badge.rest{background:rgba(224,99,126,.12);color:#e0637e}
+.pill-grid{display:grid;gap:3px;margin-bottom:6px}
+.pill-dow-row{display:grid;gap:3px;margin-bottom:2px}
+.pill-dow-cell{font-size:8px;font-weight:700;color:var(--text-sub);text-align:center;padding:2px 0}
+.pill-cell{border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;padding:4px 2px;min-height:36px;position:relative}
+.pill-cell-date{font-size:9px;font-weight:700;color:var(--text-sub);line-height:1.3}
+.pill-cell-rest{font-size:8px;font-weight:700;color:var(--text-sub);line-height:1.1}
+.pill-cell.taken{background:var(--pill-grad);box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.pill-cell.taken .pill-cell-date,.pill-cell.taken .pill-cell-rest{color:rgba(255,255,255,0.9)}
+.pill-cell.today-pill{background:var(--surface);border:2px solid var(--accent-checked);animation:pulse-today 2s infinite}
+.pill-cell.today-pill .pill-cell-date{color:var(--accent-checked)}
+.pill-cell.past-pill{background:var(--surface2);opacity:.75}
+.pill-cell.future{background:var(--surface2);opacity:.35}
+.pill-cell.rest-day{background:var(--surface2);opacity:.5;cursor:default}
+.pill-cell.rest-day .pill-cell-date{color:var(--text-sub);font-size:8px}
+@keyframes pulse-today{0%,100%{box-shadow:0 0 0 3px rgba(224,99,126,.1)}50%{box-shadow:0 0 0 7px rgba(224,99,126,.15)}}
+.sheet-day-count{font-size:26px;font-weight:900;color:var(--accent-dark);line-height:1;letter-spacing:-1px}
+.sheet-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:10px;color:var(--text-sub)}
+.legend-item{display:flex;align-items:center;gap:4px}
+.legend-dot{width:9px;height:9px;border-radius:50%}
+
+/* ── History ── */
+.history-filter-wrap{display:flex;gap:7px;overflow-x:auto;padding:0 0 10px;margin-bottom:6px;scrollbar-width:none}
+.history-filter-wrap::-webkit-scrollbar{display:none}
+.history-filter-btn{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:700;cursor:pointer;background:var(--surface);color:var(--text-sub);transition:all .18s;white-space:nowrap}
+.history-filter-btn.active{background:var(--accent-dark);color:white;border-color:var(--accent-dark)}
+.history-cal-wrap{background:var(--surface);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:14px;border:1px solid var(--border)}
+.med-stats-card{background:var(--surface);border-radius:14px;padding:14px;box-shadow:var(--shadow);margin-bottom:10px;border:1px solid var(--border)}
+.med-stats-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.med-stats-dot{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.med-stats-rate{font-size:24px;font-weight:900;color:var(--accent-dark);letter-spacing:-1px}
+.med-stats-label{font-size:11px;color:var(--text-sub);margin-top:2px}
+
+/* ── Settings ── */
+.settings-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;border:1px solid var(--border)}
+.settings-card-title{padding:10px 14px 8px;font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--text-sub);text-transform:uppercase;background:var(--surface2);border-bottom:1px solid var(--border)}
+.setting-row{display:flex;align-items:center;padding:13px 14px;gap:12px;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.setting-label{flex:1}
+.setting-label-main{font-size:14px;font-weight:700}
+.setting-label-sub{font-size:11px;color:var(--text-sub);margin-top:1px}
+.backup-info{font-size:11px;color:var(--text-sub);padding:8px 14px 10px;line-height:1.6}
+.theme-picks{display:flex;gap:10px;padding:12px 14px;flex-wrap:wrap}
+.theme-pick{width:42px;height:42px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:transform .18s,border-color .18s;display:flex;align-items:center;justify-content:center}
+.theme-pick.selected{border-color:var(--text)}
+.theme-pick:active{transform:scale(.85)}
+.theme-pick-inner{width:30px;height:30px;border-radius:50%}
+.toggle{position:relative;width:42px;height:23px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-track{position:absolute;inset:0;border-radius:12px;background:var(--border);transition:background .25s;cursor:pointer}
+.toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:white;transition:transform .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle input:checked+.toggle-track{background:var(--accent-dark)}
+.toggle input:checked+.toggle-track::after{transform:translateX(19px)}
+
+/* ── Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:22px 22px 18px 18px;padding:22px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;animation:slide-up .28s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slide-up{from{transform:translateY(80px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-title{font-size:18px;font-weight:900;color:var(--text);margin-bottom:18px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;color:var(--text-sub);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.form-input{width:100%;padding:10px 13px;border-radius:10px;border:1.5px solid var(--border);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--accent)}
+.color-picks{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.color-pick{aspect-ratio:1;border-radius:50%;cursor:pointer;transition:transform .18s;border:2.5px solid transparent}
+.color-pick:active{transform:scale(.85)}
+.color-pick.selected{border-color:var(--text)}
+.timing-picks{display:flex;gap:7px}
+.timing-pick{flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--border);text-align:center;cursor:pointer;font-size:12px;font-weight:700;color:var(--text-sub);transition:all .18s;background:var(--surface)}
+.timing-pick.selected{border-color:var(--accent-dark);background:var(--surface2);color:var(--accent-dark)}
+.btn-row{display:flex;gap:8px;margin-top:18px}
+.btn{flex:1;padding:12px;border-radius:12px;border:none;font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .14s}
+.btn-primary{background:var(--pill-grad);color:white;box-shadow:0 3px 14px rgba(0,0,0,.18)}
+.btn-secondary{background:var(--surface2);color:var(--text-sub)}
+.btn:active{transform:scale(.95)}
+
+/* ── Bottom Nav ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:76px;background:var(--surface);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text-sub);font-size:10px;font-weight:700;transition:color .14s;padding:6px 4px}
+.nav-item.active{color:var(--accent-dark)}
+.nav-icon{line-height:1;display:flex;align-items:center;justify-content:center}
+.nav-dot{width:3px;height:3px;border-radius:2px;background:var(--accent);display:none}
+.nav-item.active .nav-dot{display:block}
+
+/* ── FAB ── */
+.fab{position:fixed;bottom:86px;right:16px;width:50px;height:50px;border-radius:14px;background:var(--pill-grad);color:white;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,.22);cursor:pointer;z-index:90;border:none;transition:transform .18s}
+.fab:active{transform:scale(.9)}
+input[type="time"]{padding:7px 11px;border-radius:9px;border:1.5px solid var(--border);font-size:13px;font-family:'Zen Kaku Gothic New',sans-serif;color:var(--text);background:var(--bg);outline:none}
+input[type="time"]:focus{border-color:var(--accent)}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+.med-card.just-checked{animation:pop .28s cubic-bezier(.34,1.56,.64,1)}
+.past-day-banner{background:rgba(245,168,77,.12);border:1px solid rgba(245,168,77,.3);border-radius:12px;padding:9px 14px;margin-bottom:12px;font-size:12px;color:var(--morning);font-weight:700;text-align:center}
+</style>
+</head>
+<body data-theme="warm-gray">
+
+<!-- ══ PIN LOCK ══ -->
+<div id="pinLockScreen">
+  <div class="pin-title" id="pinTitle">くすり管理</div>
+  <div class="pin-sub" id="pinSub">PINコードを入力してください</div>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-grid">
+    <button class="pin-btn" onclick="pinInput('1')">1</button>
+    <button class="pin-btn" onclick="pinInput('2')">2</button>
+    <button class="pin-btn" onclick="pinInput('3')">3</button>
+    <button class="pin-btn" onclick="pinInput('4')">4</button>
+    <button class="pin-btn" onclick="pinInput('5')">5</button>
+    <button class="pin-btn" onclick="pinInput('6')">6</button>
+    <button class="pin-btn" onclick="pinInput('7')">7</button>
+    <button class="pin-btn" onclick="pinInput('8')">8</button>
+    <button class="pin-btn" onclick="pinInput('9')">9</button>
+    <button class="pin-btn" style="grid-column:1/span 2" onclick="pinInput('0')">0</button>
+    <button class="pin-btn del" onclick="pinDelete()">⌫</button>
+  </div>
+  <div class="pin-err" id="pinErr"></div>
+  <div class="pin-setup-note" id="pinSetupNote"></div>
+  <div id="pinSkipRow" style="display:none;margin-top:16px">
+    <button onclick="skipPinSetup()" style="background:none;border:none;color:var(--text-sub);font-size:12px;font-family:'Zen Kaku Gothic New',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:2px">PINなしで使う（後から設定に変更できます）</button>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="mainApp" style="display:none">
+
+<div class="header">
+  <div>
+    <div class="header-title">くすり管理</div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+  <div class="header-right">
+    <div class="icon-btn" onclick="openNotifModal()">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+  </div>
+</div>
+
+
+<!-- TODAY -->
+<div class="page active" id="page-today">
+  <div class="section">
+    <div class="streak-card">
+      <div>
+        <div class="streak-num" id="streakNum">0</div>
+        <div class="streak-label">日連続達成</div>
+        <div class="streak-sub">最高: <span id="bestStreak">0</span>日</div>
+      </div>
+      <div style="flex:1"><div class="week-dots" id="weekDots"></div></div>
+    </div>
+    <div class="date-nav">
+      <button class="date-nav-btn" id="dateNavPrev" onclick="changeViewDate(-1)">
+        <svg style="width:16px;height:16px;stroke:var(--text-sub);fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="date-nav-center">
+        <div class="date-nav-label" id="dateNavLabel">今日</div>
+        <div class="date-nav-sub" id="dateNavSub"></div>
+      </div>
+      <button class="date-nav-btn" id="dateNavNext" onclick="changeViewDate(1)">
+        <svg style="width:16px;height:16px;stroke:var(--text-sub);fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+    <div id="pastDayBanner"></div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>服薬状況</span><span id="progressText">0/0 完了</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="time-block" id="morningBlock">
+      <div class="time-label">
+        <div class="time-badge morning">
+          <svg class="icon icon-sm" style="stroke:var(--morning)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          朝
+        </div>
+      </div>
+      <div class="med-cards" id="morningCards"></div>
+    </div>
+    <div class="time-block" id="noonBlock">
+      <div class="time-label">
+        <div class="time-badge noon">
+          <svg class="icon icon-sm" style="stroke:var(--noon)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
+          昼
+        </div>
+      </div>
+      <div class="med-cards" id="noonCards"></div>
+    </div>
+    <div class="time-block" id="nightBlock">
+      <div class="time-label">
+        <div class="time-badge night">
+          <svg class="icon icon-sm" style="stroke:var(--night)" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          夜
+        </div>
+      </div>
+      <div class="med-cards" id="nightCards"></div>
+    </div>
+    <div class="time-block" id="prnBlock" style="display:none">
+      <div class="time-label">
+        <div class="time-badge prn">
+          <svg class="icon icon-sm" style="stroke:var(--prn)" viewBox="0 0 24 24"><path d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          頓用
+        </div>
+      </div>
+      <div class="med-cards" id="prnCards"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PILL -->
+<div class="page" id="page-pill">
+  <div class="section">
+    <div id="pillSheets"></div>
+    <button class="btn btn-primary" style="width:100%;padding:13px;border-radius:14px;margin-top:6px" onclick="openAddSheetModal()">+ 新しいシートを始める</button>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-history">
+  <div class="section">
+    <div class="history-filter-wrap" id="historyFilters"></div>
+    <div id="historyContent"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="section">
+    <!-- 1. Meds -->
+    <div class="settings-card">
+      <div class="settings-card-title">薬の管理</div>
+      <div id="medSettingsList"></div>
+      <div class="setting-row" style="cursor:pointer" onclick="openAddMedModal()">
+        <div class="setting-icon" style="background:var(--surface2)">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">薬を追加する</div></div>
+        <svg class="icon icon-sm" style="stroke:var(--text-sub)" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+    <!-- 2. Notifications -->
+    <div class="settings-card">
+      <div class="settings-card-title">通知設定</div>
+      <div class="setting-row">
+        <div class="setting-icon" style="background:rgba(245,168,77,.12)">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">朝の通知</div><div class="setting-label-sub">リマインダー時刻</div></div>
+        <input type="time" id="morningNotifTime" value="08:00" onchange="saveSettings()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-icon" style="background:rgba(76,175,137,.12)">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">昼の通知</div><div class="setting-label-sub">リマインダー時刻</div></div>
+        <input type="time" id="noonNotifTime" value="12:00" onchange="saveSettings()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-icon" style="background:rgba(125,111,176,.12)">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">夜の通知</div><div class="setting-label-sub">リマインダー時刻</div></div>
+        <input type="time" id="nightNotifTime" value="22:00" onchange="saveSettings()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-icon" style="background:rgba(80,200,120,.12)">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">ブラウザ通知</div><div class="setting-label-sub">許可が必要です</div></div>
+        <label class="toggle"><input type="checkbox" id="notifEnabled" onchange="toggleNotifications(this)"><div class="toggle-track"></div></label>
+      </div>
+    </div>
+    <!-- 3. Theme -->
+    <div class="settings-card">
+      <div class="settings-card-title">テーマ</div>
+      <div class="theme-picks" id="themePicks"></div>
+    </div>
+    <!-- 4. Security -->
+    <div class="settings-card">
+      <div class="settings-card-title">セキュリティ</div>
+      <div class="setting-row">
+        <div class="setting-icon" style="background:rgba(9,132,227,.1)">
+          <svg class="icon" style="stroke:#0984e3" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">PINロック</div><div class="setting-label-sub" id="pinStatusSub">起動時にPINを要求</div></div>
+        <label class="toggle"><input type="checkbox" id="pinEnabledToggle" onchange="togglePinEnabled(this)"><div class="toggle-track"></div></label>
+      </div>
+      <div id="changePinRow" class="setting-row" style="cursor:pointer" onclick="openChangePinModal()">
+        <div class="setting-icon" style="background:rgba(9,132,227,.1)">
+          <svg class="icon" style="stroke:#0984e3" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">PINコードを変更</div></div>
+        <svg class="icon icon-sm" style="stroke:var(--text-sub)" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+    <!-- 5. Backup -->
+    <div class="settings-card">
+      <div class="settings-card-title">バックアップ・引き継ぎ</div>
+      <div class="backup-info">⚠️ Chromeの「サイトデータ削除」や端末変更でデータが消えます。定期的にエクスポートして保存しておきましょう。</div>
+      <div class="setting-row" style="cursor:pointer" onclick="exportData()">
+        <div class="setting-icon" style="background:rgba(9,132,227,.1)">
+          <svg class="icon" style="stroke:#0984e3" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">データをエクスポート</div><div class="setting-label-sub">JSONファイルをダウンロード</div></div>
+      </div>
+      <div class="setting-row" style="cursor:pointer" onclick="document.getElementById('importInput').click()">
+        <div class="setting-icon" style="background:rgba(45,134,83,.1)">
+          <svg class="icon" style="stroke:#2d8653" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">データをインポート</div><div class="setting-label-sub">バックアップから復元</div></div>
+      </div>
+      <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+    <!-- 6. Data -->
+    <div class="settings-card">
+      <div class="settings-card-title">データ操作</div>
+      <div class="setting-row" style="cursor:pointer" onclick="resetToday()">
+        <div class="setting-icon" style="background:var(--surface2)">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main">今日のチェックをリセット</div></div>
+      </div>
+      <div class="setting-row" style="cursor:pointer" onclick="if(confirm('全データを削除しますか？'))clearAllData()">
+        <div class="setting-icon" style="background:rgba(229,57,53,.1)">
+          <svg class="icon" style="stroke:#e53935" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </div>
+        <div class="setting-label"><div class="setting-label-main" style="color:#e53935">全データを削除</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="fab" onclick="openAddMedModal()">
+  <svg style="width:22px;height:22px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="showPage('today',null,true)">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7.07-7.07l7 7a5 5 0 0 1-7.07 7.07z"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg></div>
+    <span>今日</span><div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="showPage('pill',null,true)">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+    <span>ピル</span><div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="showPage('history',null,true)">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+    <span>履歴</span><div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="showPage('settings',null,true)">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+    <span>設定</span><div class="nav-dot"></div>
+  </div>
+</div>
+</div><!-- /mainApp -->
+
+<!-- ADD/EDIT MED MODAL -->
+<div class="modal-overlay" id="addMedModal">
+  <div class="modal">
+    <div class="modal-title" id="addMedModalTitle">薬を追加</div>
+    <div class="form-group"><label class="form-label">名前</label><input class="form-input" id="newMedName" placeholder="例：フリウェル、ビタミンD..."></div>
+    <div class="form-group"><label class="form-label">メモ（用量など）</label><input class="form-input" id="newMedNote" placeholder="例：1錠、食後に..."></div>
+    <div class="form-group">
+      <label class="form-label">服薬タイミング</label>
+      <div class="timing-picks">
+        <div class="timing-pick selected" id="tp-morning" onclick="selectTiming('morning')">朝</div>
+        <div class="timing-pick" id="tp-noon" onclick="selectTiming('noon')">昼</div>
+        <div class="timing-pick" id="tp-night" onclick="selectTiming('night')">夜</div>
+        <div class="timing-pick" id="tp-prn" onclick="selectTiming('prn')">頓用</div>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">色</label><div class="color-picks" id="colorPicks"></div></div>
+    <input type="hidden" id="editMedId">
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeModal('addMedModal')">キャンセル</button>
+      <button class="btn btn-primary" id="addMedBtn" onclick="saveMed()">追加する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT SHEET MODAL -->
+<div class="modal-overlay" id="addSheetModal">
+  <div class="modal">
+    <div class="modal-title" id="addSheetModalTitle">新しいシート</div>
+    <div class="form-group"><label class="form-label">シート名</label><input class="form-input" id="newSheetName" placeholder="例：フリウェル28 シート2..."></div>
+    <div class="form-group">
+      <label class="form-label">タイプ</label>
+      <div class="timing-picks">
+        <div class="timing-pick selected" id="st-28" onclick="selectSheetType(28)">28錠<br><small style="font-weight:400;color:var(--text-sub)">休薬なし</small></div>
+        <div class="timing-pick" id="st-21" onclick="selectSheetType(21)">21錠<br><small style="font-weight:400;color:var(--text-sub)">7日休薬</small></div>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">シート開始日</label><input type="date" class="form-input" id="newSheetStart"></div>
+    <div class="form-group">
+      <label class="form-label">連携する薬（任意）</label>
+      <div style="font-size:11px;color:var(--text-sub);margin-bottom:6px;line-height:1.6">選択すると、ピルをタップ↔薬のチェックが自動で連動します</div>
+      <select class="form-input" id="sheetLinkedMed" style="cursor:pointer">
+        <option value="">連携しない</option>
+      </select>
+    </div>
+    <input type="hidden" id="editSheetId">
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeModal('addSheetModal')">キャンセル</button>
+      <button class="btn btn-primary" id="saveSheetBtn" onclick="saveSheet()">開始する</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIF MODAL -->
+<div class="modal-overlay" id="notifModal">
+  <div class="modal">
+    <div class="modal-title">通知設定</div>
+    <div class="form-group"><label class="form-label">朝の通知時間</label><input type="time" class="form-input" id="modalMorningTime" value="08:00"></div>
+    <div class="form-group"><label class="form-label">昼の通知時間</label><input type="time" class="form-input" id="modalNoonTime" value="12:00"></div>
+    <div class="form-group"><label class="form-label">夜の通知時間</label><input type="time" class="form-input" id="modalNightTime" value="22:00"></div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:12px;line-height:1.65">ブラウザの通知許可が必要です。Androidのホーム画面に追加するとアプリのように起動できます。</p>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeModal('notifModal')">閉じる</button>
+      <button class="btn btn-primary" onclick="saveNotifSettings()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PIN MODAL -->
+<div class="modal-overlay" id="changePinModal">
+  <div class="modal">
+    <div class="modal-title">PINコードを変更</div>
+    <div class="form-group"><label class="form-label">現在のPIN（4桁）</label><input class="form-input" id="currentPinInput" type="password" inputmode="numeric" maxlength="4" placeholder="現在のPINを入力"></div>
+    <div class="form-group"><label class="form-label">新しいPIN（4桁）</label><input class="form-input" id="newPinInput" type="password" inputmode="numeric" maxlength="4" placeholder="新しいPINを入力"></div>
+    <div class="form-group"><label class="form-label">新しいPIN（確認）</label><input class="form-input" id="newPinConfirmInput" type="password" inputmode="numeric" maxlength="4" placeholder="もう一度入力"></div>
+    <div style="font-size:12px;color:#e53935;min-height:18px;margin-bottom:4px" id="changePinErr"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeModal('changePinModal')">キャンセル</button>
+      <button class="btn btn-primary" onclick="changePin()">変更する</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETUP PIN MODAL (used when re-enabling PIN) -->
+<div class="modal-overlay" id="setupPinModal">
+  <div class="modal">
+    <div class="modal-title">PINコードを設定</div>
+    <div class="form-group"><label class="form-label">新しいPIN（4桁）</label><input class="form-input" id="setupPinNew" type="password" inputmode="numeric" maxlength="4" placeholder="4桁の数字"></div>
+    <div class="form-group"><label class="form-label">確認</label><input class="form-input" id="setupPinConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="もう一度入力"></div>
+    <div style="font-size:12px;color:#e53935;min-height:18px;margin-bottom:4px" id="setupPinErr"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeModal('setupPinModal');document.getElementById('pinEnabledToggle').checked=false;lsSet('okusuri-pin-disabled','1')">キャンセル</button>
+      <button class="btn btn-primary" onclick="saveSetupPin()">設定する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const THEMES=[
+  {id:'warm-gray', label:'ライトグレー',colors:['#ececec','#888888']},
+  {id:'blue',      label:'ブルー',      colors:['#74b9ff','#c7d2fe']},
+  {id:'sage',      label:'グリーン',    colors:['#74b48b','#d1fae5']},
+  {id:'dark',      label:'黒×紫',      colors:['#1a1a1f','#8b7fff']},
+  {id:'dark-green',label:'黒×緑',      colors:['#0a1a1c','#2bbfb0']},
+  {id:'dark-gray', label:'黒×灰',      colors:['#0e0e0e','#d0d0dc']},
+];
+const COLORS=[
+  // 赤・ピンク系
+  {name:'red',      bg:'linear-gradient(135deg,#ef9a9a,#c62828)',hex:'#ef9a9a'},
+  {name:'coral',    bg:'linear-gradient(135deg,#ff8a80,#e53935)',hex:'#ff8a80'},
+  {name:'pink',     bg:'linear-gradient(135deg,#f48fb1,#e91e8c)',hex:'#f48fb1'},
+  {name:'rose',     bg:'linear-gradient(135deg,#f8bbd0,#c2185b)',hex:'#f8bbd0'},
+  // 紫系
+  {name:'lavender', bg:'linear-gradient(135deg,#b39ddb,#7e57c2)',hex:'#b39ddb'},
+  {name:'purple',   bg:'linear-gradient(135deg,#ce93d8,#8e24aa)',hex:'#ce93d8'},
+  // 青系
+  {name:'navy',     bg:'linear-gradient(135deg,#5c7bc4,#283593)',hex:'#5c7bc4'},
+  {name:'sky',      bg:'linear-gradient(135deg,#81d4fa,#0288d1)',hex:'#81d4fa'},
+  // 緑系
+  {name:'mint',     bg:'linear-gradient(135deg,#80cbc4,#00897b)',hex:'#80cbc4'},
+  {name:'lime',     bg:'linear-gradient(135deg,#ccff90,#558b2f)',hex:'#ccff90'},
+  {name:'sage',     bg:'linear-gradient(135deg,#a5d6a7,#2e7d32)',hex:'#a5d6a7'},
+  // 黄・橙系
+  {name:'yellow',   bg:'linear-gradient(135deg,#fff176,#f9a825)',hex:'#fff176'},
+  {name:'amber',    bg:'linear-gradient(135deg,#ffcc80,#e65100)',hex:'#ffcc80'},
+  {name:'peach',    bg:'linear-gradient(135deg,#ffab91,#bf360c)',hex:'#ffab91'},
+  // グレー系
+  {name:'slate',    bg:'linear-gradient(135deg,#b0bec5,#37474f)',hex:'#b0bec5'},
+  {name:'charcoal', bg:'linear-gradient(135deg,#757575,#212121)',hex:'#757575'},
+];
+
+let state={meds:[],sheets:[],checks:{},pillTaken:{},settings:{morningTime:'08:00',noonTime:'12:00',nightTime:'22:00',notifEnabled:false,theme:'warm-gray'},streak:0,bestStreak:0};
+let selectedTiming='morning',selectedSheetType=28,selectedColor=COLORS[0],historyFilterMed='all';
+let historyViewYear=new Date().getFullYear(),historyViewMonth=new Date().getMonth()+1;
+let sheetViewOffsets={}; // sheetId → cycleOffset（0=現在）
+let viewDateOffset=0;
+
+const TODAY=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const getViewDate=()=>{const d=new Date();d.setDate(d.getDate()+viewDateOffset);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const dsToDate=ds=>new Date(ds+'T00:00:00');
+
+/* ══ PIN ══ */
+let pinBuffer='',pinMode='',pinFirstEntry='';
+/* ══ SAFE STORAGE (content:// / file:// 対応) ══ */
+const _mem={};
+const _sess={};
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return _mem[k]??null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){_mem[k]=v;}}
+function lsRemove(k){try{localStorage.removeItem(k);}catch(e){delete _mem[k];}}
+function ssGet(k){try{return sessionStorage.getItem(k);}catch(e){return _sess[k]??null;}}
+function ssSet(k,v){try{sessionStorage.setItem(k,v);}catch(e){_sess[k]=v;}}
+
+const getStoredPin=()=>lsGet('okusuri-pin');
+const getSessionUnlocked=()=>ssGet('okusuri-unlocked')==='1';
+const setSessionUnlocked=()=>ssSet('okusuri-unlocked','1');
+
+function initPinSystem(){
+  const pin=getStoredPin();
+  const pinDisabled=lsGet('okusuri-pin-disabled')==='1';
+  if(pinDisabled||!pin){
+    if(pinDisabled){
+      // PIN無効化 → 即アプリ表示
+      unlockApp();return;
+    } else {
+      // 初回: PIN未設定 → セットアップへ（スキップ可）
+      pinMode='setup-first';
+      document.getElementById('pinTitle').textContent='PINを設定';
+      document.getElementById('pinSub').textContent='4桁のPINコードを設定してください';
+      document.getElementById('pinSetupNote').textContent='このPINはこの端末のみで使用されます。設定 → セキュリティ からオフにもできます。';
+      document.getElementById('pinSkipRow').style.display='block';
+    }
+  } else if(getSessionUnlocked()){
+    unlockApp();return;
+  } else {
+    pinMode='enter';
+    document.getElementById('pinTitle').textContent='くすり管理';
+    document.getElementById('pinSub').textContent='PINコードを入力してください';
+  }
+}
+function unlockApp(){
+  document.getElementById('pinLockScreen').style.display='none';
+  document.getElementById('mainApp').style.display='block';
+  // mainAppが表示されてから描画
+  requestAnimationFrame(()=>renderToday());
+}
+function skipPinSetup(){
+  lsSet('okusuri-pin-disabled','1');
+  unlockApp();
+}
+function updatePinDots(){for(let i=0;i<4;i++)document.getElementById('pd'+i).classList.toggle('filled',i<pinBuffer.length);}
+function pinInput(d){if(pinBuffer.length>=4)return;pinBuffer+=d;updatePinDots();if(pinBuffer.length===4)setTimeout(processPinEntry,120);}
+function pinDelete(){if(pinBuffer.length>0){pinBuffer=pinBuffer.slice(0,-1);updatePinDots();}}
+function processPinEntry(){
+  if(pinMode==='enter'){
+    if(pinBuffer===getStoredPin()){setSessionUnlocked();unlockApp();}
+    else{document.getElementById('pinErr').textContent='PINが違います';pinBuffer='';updatePinDots();setTimeout(()=>document.getElementById('pinErr').textContent='',1800);}
+  } else if(pinMode==='setup-first'){
+    pinFirstEntry=pinBuffer;pinBuffer='';updatePinDots();
+    pinMode='setup-confirm';document.getElementById('pinSub').textContent='もう一度入力してください（確認）';
+  } else if(pinMode==='setup-confirm'){
+    if(pinBuffer===pinFirstEntry){lsSet('okusuri-pin',pinBuffer);setSessionUnlocked();unlockApp();}
+    else{document.getElementById('pinErr').textContent='一致しません。最初からやり直してください';pinBuffer='';pinFirstEntry='';pinMode='setup-first';document.getElementById('pinSub').textContent='4桁のPINコードを設定してください';updatePinDots();}
+  }
+}
+function openChangePinModal(){
+  document.getElementById('currentPinInput').value='';document.getElementById('newPinInput').value='';
+  document.getElementById('newPinConfirmInput').value='';document.getElementById('changePinErr').textContent='';
+  openModal('changePinModal');
+}
+function changePin(){
+  const current=document.getElementById('currentPinInput').value;
+  const newP=document.getElementById('newPinInput').value;
+  const conf=document.getElementById('newPinConfirmInput').value;
+  if(current!==getStoredPin()){document.getElementById('changePinErr').textContent='現在のPINが違います';return;}
+  if(!/^\d{4}$/.test(newP)){document.getElementById('changePinErr').textContent='4桁の数字で入力してください';return;}
+  if(newP!==conf){document.getElementById('changePinErr').textContent='新しいPINが一致しません';return;}
+  lsSet('okusuri-pin',newP);closeModal('changePinModal');alert('PINを変更しました');
+}
+function togglePinEnabled(el){
+  if(!el.checked){
+    // オフにする
+    const cur=prompt('現在のPINを入力してください（確認のため）');
+    if(cur===null){el.checked=true;return;}// キャンセル
+    if(cur!==lsGet('okusuri-pin')){
+      alert('PINが違います');el.checked=true;return;
+    }
+    lsSet('okusuri-pin-disabled','1');
+    document.getElementById('pinStatusSub').textContent='PINロックは無効';
+    document.getElementById('changePinRow').style.display='none';
+    alert('PINロックをオフにしました');
+  } else {
+    // オンにする（新規設定）
+    lsRemove('okusuri-pin-disabled');
+    openSetupPinModal();
+  }
+}
+function openSetupPinModal(){
+  document.getElementById('setupPinErr').textContent='';
+  document.getElementById('setupPinNew').value='';
+  document.getElementById('setupPinConfirm').value='';
+  openModal('setupPinModal');
+}
+function saveSetupPin(){
+  const newP=document.getElementById('setupPinNew').value;
+  const conf=document.getElementById('setupPinConfirm').value;
+  if(!/^\d{4}$/.test(newP)){document.getElementById('setupPinErr').textContent='4桁の数字で入力してください';return;}
+  if(newP!==conf){document.getElementById('setupPinErr').textContent='PINが一致しません';return;}
+  lsSet('okusuri-pin',newP);
+  lsRemove('okusuri-pin-disabled');
+  closeModal('setupPinModal');
+  renderSettingsPage();
+  alert('PINを設定しました。次回起動時から有効です。');
+}
+
+/* ══ STATE ══ */
+function loadState(){
+  try{
+    const s=lsGet('okusuri-v3');
+    if(s){state={...state,...JSON.parse(s)};state.settings={morningTime:'08:00',noonTime:'12:00',nightTime:'22:00',notifEnabled:false,theme:'warm-gray',...state.settings};}
+    else{
+      state.meds=[
+        {id:'m1',name:'フリウェル',note:'1錠',timing:'night',color:COLORS[0]},
+        {id:'m2',name:'ビタミンD',note:'1000IU',timing:'morning',color:COLORS[2]},
+        {id:'m3',name:'マグネシウム',note:'1錠',timing:'night',color:COLORS[1]},
+        {id:'m4',name:'鉄分',note:'1錠 食後',timing:'morning',color:COLORS[3]},
+        {id:'m5',name:'葉酸',note:'1錠',timing:'morning',color:COLORS[4]},
+        {id:'m6',name:'オメガ3',note:'2錠 食後',timing:'night',color:COLORS[5]},
+      ];
+      state.sheets=[{id:'s1',name:'フリウェル28 シート1',type:28,startDate:(()=>{const d=new Date();d.setDate(d.getDate()-14);return d.toISOString().split('T')[0]})()}];
+    }
+  }catch(e){}
+}
+function saveState(){lsSet('okusuri-v3',JSON.stringify(state));}
+
+function applyTheme(id){
+  document.body.setAttribute('data-theme',id);state.settings.theme=id;
+  document.querySelectorAll('.theme-pick').forEach(el=>el.classList.toggle('selected',el.dataset.theme===id));
+}
+function renderThemePicker(){
+  const w=document.getElementById('themePicks');w.innerHTML='';
+  THEMES.forEach(t=>{
+    const el=document.createElement('div');
+    el.className='theme-pick'+(state.settings.theme===t.id?' selected':'');
+    el.dataset.theme=t.id;el.title=t.label;
+    el.innerHTML=`<div class="theme-pick-inner" style="background:linear-gradient(135deg,${t.colors[0]},${t.colors[1]})"></div>`;
+    el.onclick=()=>{applyTheme(t.id);saveState();};
+    w.appendChild(el);
+  });
+}
+
+function showPage(name,tabEl,fromNav){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const idx=['today','pill','history','settings'].indexOf(name);
+  if(idx>=0)document.querySelectorAll('.nav-item')[idx].classList.add('active');
+  if(name==='today')renderToday();
+  if(name==='pill')renderPillSheets();
+  if(name==='history')renderHistory();
+  if(name==='settings')renderSettingsPage();
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+/* ══ DATE NAV ══ */
+function changeViewDate(delta){
+  const n=viewDateOffset+delta;
+  if(n>0||n<-7)return;
+  viewDateOffset=n;renderToday();
+}
+function jumpToDate(ds){
+  const diff=Math.round((dsToDate(ds)-dsToDate(TODAY()))/864e5);
+  if(diff>0||diff<-7)return;
+  viewDateOffset=diff;renderToday();
+}
+
+/* ══ TODAY ══ */
+function renderToday(){
+  const viewDate=getViewDate(),today=TODAY(),isToday=viewDate===today;
+  const vd=dsToDate(viewDate);
+  const days=['日','月','火','水','木','金','土'];
+  document.getElementById('dateNavLabel').textContent=isToday?'今日':`${vd.getMonth()+1}月${vd.getDate()}日 (${days[vd.getDay()]})`;
+  document.getElementById('dateNavSub').textContent=isToday?'':Math.abs(viewDateOffset)+'日前';
+  document.getElementById('dateNavPrev').disabled=viewDateOffset<=-7;
+  document.getElementById('dateNavNext').disabled=viewDateOffset>=0;
+  document.getElementById('pastDayBanner').innerHTML=isToday?'':'<div class="past-day-banner">📅 過去の日付を表示中 — チェックを編集できます</div>';
+  if(!state.checks[viewDate])state.checks[viewDate]={};
+  const morningMeds=state.meds.filter(m=>m.timing==='morning');
+  const noonMeds=state.meds.filter(m=>m.timing==='noon');
+  const nightMeds=state.meds.filter(m=>m.timing==='night');
+  const prnMeds=state.meds.filter(m=>m.timing==='prn');
+  document.getElementById('morningBlock').style.display=morningMeds.length?'block':'none';
+  document.getElementById('noonBlock').style.display=noonMeds.length?'block':'none';
+  document.getElementById('nightBlock').style.display=nightMeds.length?'block':'none';
+  document.getElementById('prnBlock').style.display=prnMeds.length?'block':'none';
+  if(morningMeds.length)renderMedCards('morningCards',morningMeds,viewDate);
+  if(noonMeds.length)renderMedCards('noonCards',noonMeds,viewDate);
+  if(nightMeds.length)renderMedCards('nightCards',nightMeds,viewDate);
+  if(prnMeds.length)renderPrnCards('prnCards',prnMeds,viewDate);
+  updateProgress(viewDate);renderWeekDots();updateStreak();
+  const now=new Date();
+  document.getElementById('headerDate').textContent=`${now.getMonth()+1}月${now.getDate()}日 (${days[now.getDay()]})`;
+}
+
+function renderMedCards(id,meds,viewDate){
+  const c=document.getElementById(id);c.innerHTML='';
+  if(!meds.length){c.innerHTML='<div style="padding:10px 0;font-size:12px;color:var(--text-sub);text-align:center">薬が登録されていません</div>';return;}
+  meds.forEach(med=>{
+    const checked=!!(state.checks[viewDate]&&state.checks[viewDate][med.id]);
+    const div=document.createElement('div');
+    div.className='med-card'+(checked?' checked':'');div.id='card-'+med.id;
+    div.innerHTML=`
+      <div class="med-pill-dot" style="background:${med.color.bg}">
+        <svg style="width:18px;height:18px;stroke:white;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7.07-7.07l7 7a5 5 0 0 1-7.07 7.07z"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg>
+      </div>
+      <div class="med-info"><div class="med-name">${med.name}</div><div class="med-note">${med.note||''}</div></div>
+      <div class="check-circle" style="${checked?'background:var(--accent-checked);border-color:var(--accent-checked);box-shadow:0 2px 10px rgba(0,0,0,.15)':''}">
+        <svg viewBox="0 0 14 14" style="width:14px;height:14px;fill:none;stroke:${checked?'white':'transparent'};stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><polyline points="2,7 5.5,11 12,3"/></svg>
+      </div>`;
+    div.onclick=()=>toggleMed(med.id,viewDate);
+    c.appendChild(div);
+  });
+}
+
+function toggleMed(medId,viewDate){
+  if(!state.checks[viewDate])state.checks[viewDate]={};
+  state.checks[viewDate][medId]=!state.checks[viewDate][medId];
+  saveState();
+  if(viewDate===TODAY())syncTodayCheckToPill(viewDate,medId,state.checks[viewDate][medId]);
+  const card=document.getElementById('card-'+medId);if(!card)return;
+  const checked=state.checks[viewDate][medId];
+  card.classList.toggle('checked',checked);
+  card.classList.add('just-checked');setTimeout(()=>card.classList.remove('just-checked'),320);
+  const circle=card.querySelector('.check-circle');
+  circle.style.cssText=checked?'background:var(--accent-checked);border-color:var(--accent-checked);box-shadow:0 2px 10px rgba(0,0,0,.15)':'';
+  circle.querySelector('svg').style.stroke=checked?'white':'transparent';
+  updateProgress(viewDate);updateStreak();
+}
+
+function syncTodayCheckToPill(today,medId,checked){
+  // 連携: 今日タブの薬チェック → ピルシートに反映
+  state.sheets.forEach(sheet=>{
+    if(sheet.linkedMedId!==medId)return;
+    const diffDays=Math.floor((dsToDate(today)-dsToDate(sheet.startDate))/864e5);
+    if(diffDays<0||diffDays>=sheet.type)return;
+    if(!state.pillTaken[sheet.id])state.pillTaken[sheet.id]={};
+    state.pillTaken[sheet.id][diffDays+1]=checked;
+  });
+  saveState();
+}
+
+function updateProgress(viewDate){
+  // 頓用は服薬状況バーから除外
+  const nonPrn=state.meds.filter(m=>m.timing!=='prn');
+  const total=nonPrn.length;
+  if(!total){document.getElementById('progressFill').style.width='0%';document.getElementById('progressText').textContent='0/0 完了';return;}
+  const c=state.checks[viewDate]||{};
+  const done=nonPrn.filter(m=>c[m.id]).length;
+  document.getElementById('progressFill').style.width=Math.round(done/total*100)+'%';
+  document.getElementById('progressText').textContent=`${done}/${total} 完了`;
+}
+
+function isDayComplete(ds){
+  const nonPrn=state.meds.filter(m=>m.timing!=='prn');
+  if(!nonPrn.length)return false;
+  const c=state.checks[ds]||{};
+  return nonPrn.every(m=>c[m.id]);
+}
+function isDayPartial(ds){
+  const nonPrn=state.meds.filter(m=>m.timing!=='prn');
+  const c=state.checks[ds]||{};
+  return nonPrn.some(m=>c[m.id]);
+}
+function isMedChecked(ds,medId){return!!(state.checks[ds]&&state.checks[ds][medId]);}
+
+function renderPrnCards(id,meds,viewDate){
+  const c=document.getElementById(id);c.innerHTML='';
+  if(!meds.length)return;
+  meds.forEach(med=>{
+    const count=(state.checks[viewDate]&&state.checks[viewDate][med.id])||0;
+    const div=document.createElement('div');
+    div.className='med-card'+(count>0?' checked':'');div.id='card-'+med.id;
+    div.innerHTML=`
+      <div class="med-pill-dot" style="background:${med.color.bg}">
+        <svg style="width:18px;height:18px;stroke:white;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7.07-7.07l7 7a5 5 0 0 1-7.07 7.07z"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg>
+      </div>
+      <div class="med-info">
+        <div class="med-name">${med.name}</div>
+        <div class="med-note">${med.note||''} · 今日: <strong style="color:var(--accent-dark)">${count}錠</strong></div>
+        <div class="prn-count-row">
+          <span style="font-size:11px;color:var(--text-sub);margin-right:2px">回数:</span>
+          ${[0,1,2,3,4].map(n=>`<button class="prn-count-btn${count===n?' active':''}" onclick="setPrnCount('${med.id}','${viewDate}',${n})">${n===0?'—':n+'錠'}</button>`).join('')}
+        </div>
+      </div>`;
+    div.style.cursor='default';
+    c.appendChild(div);
+  });
+}
+function setPrnCount(medId,viewDate,count){
+  if(!state.checks[viewDate])state.checks[viewDate]={};
+  state.checks[viewDate][medId]=count;
+  saveState();
+  // カードだけ更新
+  const prnMeds=state.meds.filter(m=>m.timing==='prn');
+  renderPrnCards('prnCards',prnMeds,viewDate);
+  updateProgress(viewDate);updateStreak();
+}
+
+function updateStreak(){
+  let s=0;let d=new Date();
+  while(s<366){
+    const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if(!isDayComplete(ds))break;
+    s++;d.setDate(d.getDate()-1);
+  }
+  state.streak=s;if(s>(state.bestStreak||0))state.bestStreak=s;
+  document.getElementById('streakNum').textContent=s;
+  document.getElementById('bestStreak').textContent=state.bestStreak||0;
+  saveState();
+}
+
+function renderWeekDots(){
+  const today=TODAY(),viewDate=getViewDate();
+  const c=document.getElementById('weekDots');c.innerHTML='';
+  const days=['日','月','火','水','木','金','土'];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    let cls='future';
+    if(ds===viewDate&&ds!==today)cls='viewing';
+    else if(ds===today)cls='today';
+    else if(ds<today){if(isDayComplete(ds))cls='done';else if(isDayPartial(ds))cls='partial';}
+    const dot=document.createElement('div');dot.className='week-dot';
+    dot.innerHTML=`<div class="week-dot-circle ${cls}" onclick="jumpToDate('${ds}')">${d.getDate()}</div><div class="week-dot-label">${days[d.getDay()]}</div>`;
+    c.appendChild(dot);
+  }
+}
+
+/* ══ PILL SHEETS ══ */
+function buildSheetGrid(sheet, cycleOffset){
+  const cycleDays=sheet.type===21?28:sheet.type;
+  const diffDays=Math.floor((dsToDate(TODAY())-dsToDate(sheet.startDate))/864e5);
+  const currentCycle=Math.floor(diffDays/cycleDays);
+  const targetCycle=currentCycle+cycleOffset;
+  const targetStart=new Date(dsToDate(sheet.startDate));
+  targetStart.setDate(targetStart.getDate()+targetCycle*cycleDays);
+  const tds=`${targetStart.getFullYear()}-${String(targetStart.getMonth()+1).padStart(2,'0')}-${String(targetStart.getDate()).padStart(2,'0')}`;
+  const targetDiffBase=Math.floor((dsToDate(TODAY())-dsToDate(tds))/864e5);
+  if(!state.pillTaken[sheet.id])state.pillTaken[sheet.id]={};
+  const dowLabels=['日','月','火','水','木','金','土'];
+  let dowRowHTML=`<div class="pill-dow-row" style="grid-template-columns:repeat(7,1fr)">`;
+  for(let d=0;d<7;d++){
+    const cd=new Date(targetStart);cd.setDate(cd.getDate()+d);
+    dowRowHTML+=`<div class="pill-dow-cell">${dowLabels[cd.getDay()]}</div>`;
+  }
+  dowRowHTML+='</div>';
+  const pillBase=targetCycle*cycleDays;
+  let gridHTML=`<div class="pill-grid" style="grid-template-columns:repeat(7,1fr)">`;
+  for(let i=1;i<=sheet.type;i++){
+    const absIdx=pillBase+i;
+    const dayDiff=targetDiffBase-(i-1);
+    let cls;
+    if(state.pillTaken[sheet.id][absIdx])cls='taken';
+    else if(dayDiff===0)cls='today-pill';
+    else if(dayDiff>0)cls='past-pill';
+    else cls='future';
+    const cd=new Date(targetStart);cd.setDate(cd.getDate()+i-1);
+    const mm=cd.getMonth()+1,dd=cd.getDate();
+    gridHTML+=`<div class="pill-cell ${cls}" onclick="takePillAbs('${sheet.id}',${absIdx})"><span class="pill-cell-date">${mm}/${dd}</span></div>`;
+  }
+  if(sheet.type===21){
+    for(let i=0;i<7;i++){
+      const rd=new Date(targetStart);rd.setDate(rd.getDate()+21+i);
+      gridHTML+=`<div class="pill-cell rest-day"><span class="pill-cell-rest">休</span><span class="pill-cell-date">${rd.getMonth()+1}/${rd.getDate()}</span></div>`;
+    }
+  }
+  gridHTML+='</div>';
+  return {dowRowHTML,gridHTML,targetCycle,targetStart};
+}
+
+function changeSheetCycle(sheetId,delta){
+  const cur=sheetViewOffsets[sheetId]||0;
+  const next=cur+delta;
+  if(next<-3||next>6)return; // 過去3・未来6
+  sheetViewOffsets[sheetId]=next;
+  renderPillSheets();
+}
+
+function renderPillSheets(){
+  const c=document.getElementById('pillSheets');c.innerHTML='';
+  if(!state.sheets.length){c.innerHTML='<div style="text-align:center;padding:22px;color:var(--text-sub);font-size:13px">シートを追加してください</div>';return;}
+  state.sheets.forEach(sheet=>{
+    const cycleDays=sheet.type===21?28:sheet.type;
+    const diffDays=Math.floor((dsToDate(TODAY())-dsToDate(sheet.startDate))/864e5);
+    const offset=sheetViewOffsets[sheet.id]||0;
+    const cycleDay=diffDays%cycleDays;
+    const isRestDay=sheet.type===21&&cycleDay>=21&&offset===0;
+    const currentPill=Math.min(cycleDay+1,sheet.type);
+    const {dowRowHTML,gridHTML,targetCycle,targetStart}=buildSheetGrid(sheet,offset);
+    const isCurrent=offset===0;
+    const canPrev=offset>-3, canNext=offset<6;
+
+    // シートラベル
+    let cycleLabel='';
+    if(offset<0) cycleLabel=`前のシート（${Math.abs(offset)}周前）`;
+    else if(offset===0) cycleLabel=isRestDay?'休薬日':'服薬中';
+    else cycleLabel=`次のシート（${offset}周後）`;
+
+    const badgeStyle=offset<0
+      ?'background:var(--surface2);color:var(--text-sub)'
+      :offset===0
+        ?(isRestDay?'background:rgba(224,99,126,.12);color:#e0637e':'background:rgba(45,134,83,.12);color:#2d8653')
+        :'background:rgba(var(--accent-rgb,.5),0.12);color:var(--accent-dark)';
+
+    // ナビ月表示
+    const navLabel=`${targetStart.getMonth()+1}月${targetStart.getDate()}日〜`;
+
+    const card=document.createElement('div');
+    card.className='sheet-card';
+
+    card.innerHTML=`
+      <div class="sheet-header">
+        <div>
+          <div class="sheet-name">${sheet.name}</div>
+          ${sheet.linkedMedId?`<div style="font-size:11px;color:var(--accent-dark);font-weight:700;margin-top:2px">連携: ${(state.meds.find(m=>m.id===sheet.linkedMedId)||{}).name||''}</div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          <span class="sheet-badge" style="${badgeStyle}">${cycleLabel}</span>
+          ${isCurrent?`<div style="display:flex;gap:10px"><span style="font-size:11px;color:var(--accent-dark);cursor:pointer;font-weight:700" onclick="editSheet('${sheet.id}')">開始日を変更</span><span style="font-size:11px;color:var(--text-sub);cursor:pointer" onclick="deleteSheet('${sheet.id}')">削除</span></div>`:''}
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <button onclick="changeSheetCycle('${sheet.id}',-1)" ${canPrev?'':'disabled'} style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:18px;cursor:${canPrev?'pointer':'default'};opacity:${canPrev?1:0.25};display:flex;align-items:center;justify-content:center">&#8249;</button>
+        <span style="font-size:12px;font-weight:700;color:var(--text-sub)">${navLabel}</span>
+        <button onclick="changeSheetCycle('${sheet.id}',1)" ${canNext?'':'disabled'} style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:18px;cursor:${canNext?'pointer':'default'};opacity:${canNext?1:0.25};display:flex;align-items:center;justify-content:center">&#8250;</button>
+      </div>
+      ${dowRowHTML}${gridHTML}
+      ${isCurrent?`
+      <div style="display:flex;align-items:center;gap:12px;margin-top:12px">
+        <div><div class="sheet-day-count">${isRestDay?'休薬':currentPill}</div><div style="font-size:11px;color:var(--text-sub)">${isRestDay?`${cycleDay-20}日目`:`錠目 / ${sheet.type}錠`}</div></div>
+        <div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--text-sub);margin-bottom:4px">${isRestDay?'次のシートまで':'シート進捗'}</div><div class="progress-bar"><div class="progress-fill" style="width:${isRestDay?Math.round((cycleDay-20)/7*100):Math.round(currentPill/sheet.type*100)}%"></div></div></div>
+      </div>
+      <div class="sheet-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--pill-grad)"></div>服薬済み</div>
+        <div class="legend-item"><div class="legend-dot" style="border:1.5px solid var(--accent-checked);background:var(--surface)"></div>今日</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--surface2)"></div>これから</div>
+        ${sheet.type===21?'<div class="legend-item"><div class="legend-dot" style="background:var(--surface2);opacity:.6"></div>休薬</div>':''}
+      </div>`:''}`;
+    c.appendChild(card);
+  });
+}
+
+function takePillAbs(sheetId,absIdx){
+  if(!state.pillTaken[sheetId])state.pillTaken[sheetId]={};
+  const newVal=!state.pillTaken[sheetId][absIdx];
+  state.pillTaken[sheetId][absIdx]=newVal;
+  const sheet=state.sheets.find(s=>s.id===sheetId);
+  if(sheet&&sheet.linkedMedId){
+    const diffDays=Math.floor((dsToDate(TODAY())-dsToDate(sheet.startDate))/864e5);
+    if(absIdx===diffDays+1){
+      if(!state.checks[TODAY()])state.checks[TODAY()]={};
+      state.checks[TODAY()][sheet.linkedMedId]=newVal;
+    }
+  }
+  saveState();renderPillSheets();
+  if(document.getElementById('page-today').classList.contains('active'))renderToday();
+}
+function takePill(sheetId,pillNum){ takePillAbs(sheetId,pillNum); }
+
+function editSheet(id){
+  const sheet=state.sheets.find(s=>s.id===id);if(!sheet)return;
+  document.getElementById('addSheetModalTitle').textContent='シートを編集';
+  document.getElementById('newSheetName').value=sheet.name;
+  document.getElementById('newSheetStart').value=sheet.startDate;
+  document.getElementById('editSheetId').value=id;
+  selectedSheetType=sheet.type;
+  document.getElementById('st-28').classList.toggle('selected',sheet.type===28);
+  document.getElementById('st-21').classList.toggle('selected',sheet.type===21);
+  document.getElementById('saveSheetBtn').textContent='保存する';
+  populateSheetMedSelector(sheet.linkedMedId||'');
+  openModal('addSheetModal');
+}
+function deleteSheet(id){
+  if(!confirm('このシートを削除しますか？'))return;
+  state.sheets=state.sheets.filter(s=>s.id!==id);delete state.pillTaken[id];saveState();renderPillSheets();
+}
+
+/* ══ HISTORY ══ */
+function renderHistory(){renderHistoryFilters();renderHistoryContent();}
+function renderHistoryFilters(){
+  const w=document.getElementById('historyFilters');w.innerHTML='';
+  const allBtn=document.createElement('button');
+  allBtn.className='history-filter-btn'+(historyFilterMed==='all'?' active':'');
+  allBtn.textContent='全体';allBtn.onclick=()=>{historyFilterMed='all';renderHistory();};w.appendChild(allBtn);
+  state.meds.forEach(med=>{
+    const btn=document.createElement('button');
+    btn.className='history-filter-btn'+(historyFilterMed===med.id?' active':'');
+    btn.textContent=med.name;btn.onclick=()=>{historyFilterMed=med.id;renderHistory();};w.appendChild(btn);
+  });
+}
+function renderHistoryContent(){
+  const c=document.getElementById('historyContent');c.innerHTML='';
+  const med=historyFilterMed==='all'?null:state.meds.find(m=>m.id===historyFilterMed);
+  if(med)renderMedStats(c,med);
+  renderHistoryCalendar(c,med);
+}
+function renderMedStats(container,med){
+  const card=document.createElement('div');card.className='med-stats-card';
+  const isPrn=med.timing==='prn';
+  const tl=med.timing==='morning'?'朝':med.timing==='noon'?'昼':med.timing==='prn'?'頓用':'夜';
+  // 表示中の月の全日を集計
+  const daysInMonth=new Date(historyViewYear,historyViewMonth,0).getDate();
+  const todayStr=TODAY();
+  let taken=0,total=0,totalDoses=0,maxS=0,cur=0;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${historyViewYear}-${String(historyViewMonth).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    if(ds>todayStr)continue;
+    total++;
+    const val=state.checks[ds]?state.checks[ds][med.id]:0;
+    if(isPrn){const cnt=parseInt(val)||0;if(cnt>0)taken++;totalDoses+=cnt;}
+    else{
+      if(val){taken++;cur++;if(cur>maxS)maxS=cur;}else cur=0;
+    }
+  }
+  const rate=total?Math.round(taken/total*100):0;
+  const statsHTML=isPrn
+    ?`<div><div class="med-stats-rate">${total?Math.round(taken/total*100):0}%</div><div class="med-stats-label">服薬率</div></div>
+       <div><div class="med-stats-rate">${taken}/${total}</div><div class="med-stats-label">服薬日数</div></div>
+       <div><div class="med-stats-rate">${totalDoses}</div><div class="med-stats-label">月合計錠数</div></div>
+       <div><div class="med-stats-rate">${Math.round(totalDoses/daysInMonth*10)/10}</div><div class="med-stats-label">月平均錠数</div></div>`
+    :`<div><div class="med-stats-rate">${rate}%</div><div class="med-stats-label">服薬率</div></div>
+       <div><div class="med-stats-rate">${taken}/${total}</div><div class="med-stats-label">服薬日数</div></div>
+       <div><div class="med-stats-rate">${maxS}</div><div class="med-stats-label">最長連続</div></div>`;
+  card.innerHTML=`
+    <div class="med-stats-header">
+      <div class="med-stats-dot" style="background:${med.color.bg}"><svg style="width:16px;height:16px;stroke:white;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7.07-7.07l7 7a5 5 0 0 1-7.07 7.07z"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg></div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:900;color:var(--text)">${med.name}</div><div style="font-size:11px;color:var(--text-sub)">${med.note||''} · ${tl}</div></div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px">${statsHTML}</div>
+    ${!isPrn?`<div class="progress-bar" style="margin-top:10px"><div class="progress-fill" style="width:${rate}%;background:${med.color.bg}"></div></div>`:''}`;
+  container.appendChild(card);
+}
+function changeHistoryMonth(delta){
+  historyViewMonth+=delta;
+  if(historyViewMonth>12){historyViewMonth=1;historyViewYear++;}
+  if(historyViewMonth<1){historyViewMonth=12;historyViewYear--;}
+  renderHistory();
+}
+function renderHistoryCalendar(container,filterMed){
+  const wrap=document.createElement('div');wrap.className='history-cal-wrap';
+  const now=new Date();
+  const isCurrentMonth=(historyViewYear===now.getFullYear()&&historyViewMonth===now.getMonth()+1);
+  const daysInMonth=new Date(historyViewYear,historyViewMonth,0).getDate();
+  const firstDay=new Date(historyViewYear,historyViewMonth-1,1).getDay();// 0=日
+  const todayStr=TODAY();
+
+  // 月ナビ
+  const nav=document.createElement('div');
+  nav.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:12px';
+  nav.innerHTML=`
+    <button onclick="changeHistoryMonth(-1)" style="width:32px;height:32px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">‹</button>
+    <div style="font-size:15px;font-weight:900;color:var(--text)">${historyViewYear}年${historyViewMonth}月${filterMed?' · '+filterMed.name:''}</div>
+    <button onclick="changeHistoryMonth(1)" ${isCurrentMonth?'disabled style="opacity:.3;cursor:not-allowed;width:32px;height:32px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:16px"':'style="width:32px;height:32px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center"'}>›</button>`;
+  wrap.appendChild(nav);
+
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(7,1fr);gap:4px';
+  ['日','月','火','水','木','金','土'].forEach(dl=>{
+    const el=document.createElement('div');
+    el.style.cssText='text-align:center;font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0';
+    el.textContent=dl;grid.appendChild(el);
+  });
+  // 月初の空白
+  for(let i=0;i<firstDay;i++)grid.appendChild(document.createElement('div'));
+  // 日付セル
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${historyViewYear}-${String(historyViewMonth).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=ds===todayStr;
+    const isFuture=ds>todayStr;
+    let bg='var(--surface2)',color='var(--text-sub)',opacity=isFuture?.28:1;
+    let prnCount=0;
+    if(!isFuture){
+      if(filterMed){
+        if(filterMed.timing==='prn'){
+          prnCount=parseInt((state.checks[ds]||{})[filterMed.id])||0;
+          if(prnCount>0){bg=filterMed.color.bg;color='white';}
+        }else{
+          if(isMedChecked(ds,filterMed.id)){bg=filterMed.color.bg;color='white';}
+        }
+      }else{
+        if(isDayComplete(ds)){bg='var(--pill-grad)';color='white';}
+        else if(isDayPartial(ds)){bg='var(--accent)';color='white';opacity=.65;}
+      }
+    }
+    const cell=document.createElement('div');
+    cell.style.cssText=`aspect-ratio:1;border-radius:50%;background:${bg};color:${color};display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:${prnCount>0?'9px':'11px'};font-weight:700;opacity:${opacity};${isToday?'box-shadow:0 0 0 2.5px var(--accent-checked)':''}`;
+    if(prnCount>0){cell.innerHTML=`<span>${d}</span><span style="font-size:9px;opacity:.85">${prnCount}錠</span>`;}
+    else{cell.textContent=d;}
+    grid.appendChild(cell);
+  }
+  wrap.appendChild(grid);
+
+  // 凡例
+  const legend=document.createElement('div');
+  legend.style.cssText='display:flex;gap:10px;margin-top:12px;flex-wrap:wrap';
+  legend.innerHTML=filterMed
+    ?`<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:10px;height:10px;border-radius:50%;background:${filterMed.color.bg}"></div>服薬済み</div><div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:10px;height:10px;border-radius:50%;background:var(--surface2)"></div>未服薬</div>`
+    :`<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:10px;height:10px;border-radius:50%;background:var(--pill-grad)"></div>全部OK</div><div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:10px;height:10px;border-radius:50%;background:var(--accent);opacity:.65"></div>一部のみ</div><div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sub)"><div style="width:10px;height:10px;border-radius:50%;background:var(--surface2)"></div>未服薬</div>`;
+  wrap.appendChild(legend);
+  container.appendChild(wrap);
+}
+
+/* ══ SETTINGS ══ */
+function renderSettingsPage(){
+  renderThemePicker();
+  const list=document.getElementById('medSettingsList');list.innerHTML='';
+  state.meds.forEach((med,idx)=>{
+    const row=document.createElement('div');row.className='setting-row';
+    const tl=med.timing==='morning'?'朝':med.timing==='noon'?'昼':med.timing==='prn'?'頓用':'夜';
+    const isFirst=idx===0,isLast=idx===state.meds.length-1;
+    row.innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:1px;margin-right:4px">
+        <button onclick="moveMed('${med.id}',-1)" ${isFirst?'disabled':''} style="background:none;border:none;cursor:${isFirst?'default':'pointer'};opacity:${isFirst?0.2:0.6};padding:2px;display:flex;align-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-dark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
+        <button onclick="moveMed('${med.id}',1)" ${isLast?'disabled':''} style="background:none;border:none;cursor:${isLast?'default':'pointer'};opacity:${isLast?0.2:0.6};padding:2px;display:flex;align-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-dark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+      <div class="setting-icon" style="background:${med.color.hex}20">
+        <svg style="width:16px;height:16px;stroke:${med.color.hex};fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7.07-7.07l7 7a5 5 0 0 1-7.07 7.07z"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg>
+      </div>
+      <div class="setting-label" style="cursor:pointer" onclick="openEditMedModal('${med.id}')">
+        <div class="setting-label-main">${med.name}</div>
+        <div class="setting-label-sub">${med.note||''} · ${tl}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div onclick="openEditMedModal('${med.id}')" style="cursor:pointer;padding:4px">
+          <svg style="width:14px;height:14px;stroke:var(--accent-dark);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div onclick="deleteMed('${med.id}')" style="cursor:pointer;padding:4px">
+          <svg style="width:16px;height:16px;stroke:#e53935;fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+      </div>`;
+    list.appendChild(row);
+  });
+  document.getElementById('morningNotifTime').value=state.settings.morningTime;
+  document.getElementById('noonNotifTime').value=state.settings.noonTime||'12:00';
+  document.getElementById('nightNotifTime').value=state.settings.nightTime;
+  document.getElementById('notifEnabled').checked=state.settings.notifEnabled;
+  // PIN toggle
+  const pinDisabled=lsGet('okusuri-pin-disabled')==='1';
+  const hasPin=!!lsGet('okusuri-pin');
+  const pinOn=!pinDisabled&&hasPin;
+  document.getElementById('pinEnabledToggle').checked=pinOn;
+  document.getElementById('pinStatusSub').textContent=pinOn?'起動時にPINを要求':'PINロックは無効';
+  document.getElementById('changePinRow').style.display=pinOn?'flex':'none';
+}
+function deleteMed(id){
+  if(!confirm('この薬を削除しますか？'))return;
+  state.meds=state.meds.filter(m=>m.id!==id);saveState();renderSettingsPage();renderToday();
+}
+function moveMed(id,delta){
+  const i=state.meds.findIndex(m=>m.id===id);
+  if(i<0)return;
+  const j=i+delta;
+  if(j<0||j>=state.meds.length)return;
+  [state.meds[i],state.meds[j]]=[state.meds[j],state.meds[i]];
+  saveState();renderSettingsPage();renderToday();
+}
+function saveSettings(){
+  state.settings.morningTime=document.getElementById('morningNotifTime').value;
+  state.settings.noonTime=document.getElementById('noonNotifTime').value;
+  state.settings.nightTime=document.getElementById('nightNotifTime').value;
+  saveState();scheduleNotifications();
+}
+function toggleNotifications(el){
+  if(el.checked){
+    Notification.requestPermission().then(perm=>{
+      state.settings.notifEnabled=perm==='granted';el.checked=state.settings.notifEnabled;saveState();
+      if(state.settings.notifEnabled){scheduleNotifications();alert('通知を許可しました');}
+      else alert('通知が許可されませんでした。ブラウザの設定を確認してください。');
+    });
+  }else{state.settings.notifEnabled=false;saveState();}
+}
+function scheduleNotifications(){
+  if(!('Notification'in window)||Notification.permission!=='granted')return;
+  if(window._nt)window._nt.forEach(t=>clearTimeout(t));window._nt=[];
+  const scheduleFor=(ts,msg)=>{
+    if(!ts)return;
+    const[h,m]=ts.split(':').map(Number);
+    if(isNaN(h)||isNaN(m))return;
+    const now=new Date(),tgt=new Date();
+    tgt.setHours(h,m,0,0);
+    if(tgt<=now)tgt.setDate(tgt.getDate()+1);
+    const delay=tgt-now;
+    const t=setTimeout(()=>{
+      // 通知時に今日チェック済みか確認（任意）
+      new Notification('くすり管理',{body:msg,icon:'./icon-192.png',badge:'./icon-192.png',vibrate:[300,100,300]});
+      scheduleFor(ts,msg);
+    },delay);
+    window._nt.push(t);
+  };
+  // 朝昼夜で薬が登録されているときだけスケジュール
+  if(state.meds.some(m=>m.timing==='morning'))
+    scheduleFor(state.settings.morningTime,'朝の薬を飲む時間です');
+  if(state.meds.some(m=>m.timing==='noon'))
+    scheduleFor(state.settings.noonTime||'12:00','昼の薬を飲む時間です');
+  if(state.meds.some(m=>m.timing==='night'))
+    scheduleFor(state.settings.nightTime,'夜の薬を飲む時間です');
+}
+// ページが再度表示されたときにタイマーを再設定（スリープ復帰対策）
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&state.settings.notifEnabled)scheduleNotifications();
+});
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  const d=new Date();
+  a.download=`kusuri-backup-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  a.href=url;a.click();URL.revokeObjectURL(url);
+}
+function importData(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const parsed=JSON.parse(e.target.result);
+      if(!parsed.meds||!Array.isArray(parsed.meds))throw new Error();
+      if(!confirm(`バックアップから復元しますか？\n薬: ${parsed.meds.length}種類\n現在のデータは上書きされます。`))return;
+      state={...state,...parsed};state.settings={morningTime:'08:00',noonTime:'12:00',nightTime:'22:00',notifEnabled:false,theme:'warm-gray',...state.settings};
+      saveState();applyTheme(state.settings.theme);renderToday();renderSettingsPage();alert('復元しました');
+    }catch{alert('ファイルが正しくありません');}
+  };
+  reader.readAsText(file);event.target.value='';
+}
+
+/* ══ MED MODAL ══ */
+function buildColorPicker(selectedName){
+  const cp=document.getElementById('colorPicks');cp.innerHTML='';
+  COLORS.forEach((c,i)=>{
+    const el=document.createElement('div');
+    const isSel=selectedName?c.name===selectedName:i===0;
+    el.className='color-pick'+(isSel?' selected':'');el.style.background=c.bg;
+    el.onclick=()=>{selectedColor=c;document.querySelectorAll('.color-pick').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');};
+    cp.appendChild(el);
+  });
+}
+function openAddMedModal(){
+  document.getElementById('addMedModalTitle').textContent='薬を追加';
+  document.getElementById('addMedBtn').textContent='追加する';
+  selectedTiming='morning';selectedColor=COLORS[0];
+  document.getElementById('newMedName').value='';document.getElementById('newMedNote').value='';
+  document.getElementById('editMedId').value='';
+  ['morning','noon','night','prn'].forEach(t=>document.getElementById('tp-'+t).classList.toggle('selected',t==='morning'));
+  buildColorPicker(null);openModal('addMedModal');
+}
+function openEditMedModal(id){
+  const med=state.meds.find(m=>m.id===id);if(!med)return;
+  document.getElementById('addMedModalTitle').textContent='薬を編集';
+  document.getElementById('addMedBtn').textContent='保存する';
+  document.getElementById('newMedName').value=med.name;document.getElementById('newMedNote').value=med.note||'';
+  document.getElementById('editMedId').value=id;
+  selectedTiming=med.timing;selectedColor=med.color;
+  ['morning','noon','night','prn'].forEach(t=>document.getElementById('tp-'+t).classList.toggle('selected',t===med.timing));
+  buildColorPicker(med.color.name);openModal('addMedModal');
+}
+function selectTiming(t){
+  selectedTiming=t;
+  ['morning','noon','night','prn'].forEach(x=>document.getElementById('tp-'+x).classList.toggle('selected',x===t));
+}
+function saveMed(){
+  const name=document.getElementById('newMedName').value.trim();if(!name){alert('名前を入力してください');return;}
+  const editId=document.getElementById('editMedId').value;
+  if(editId){
+    const med=state.meds.find(m=>m.id===editId);
+    if(med){med.name=name;med.note=document.getElementById('newMedNote').value.trim();med.timing=selectedTiming;med.color=selectedColor;}
+  }else{
+    state.meds.push({id:'m'+Date.now(),name,note:document.getElementById('newMedNote').value.trim(),timing:selectedTiming,color:selectedColor});
+  }
+  saveState();closeModal('addMedModal');renderToday();renderSettingsPage();
+}
+
+/* ══ SHEET MODAL ══ */
+function populateSheetMedSelector(linkedMedId=''){
+  const sel=document.getElementById('sheetLinkedMed');
+  sel.innerHTML='<option value="">連携しない</option>';
+  state.meds.forEach(m=>{
+    const opt=document.createElement('option');
+    opt.value=m.id;opt.textContent=`${m.name}（${m.timing==='morning'?'朝':m.timing==='noon'?'昼':'夜'}）`;
+    if(m.id===linkedMedId)opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
+function openAddSheetModal(){
+  selectedSheetType=28;
+  document.getElementById('addSheetModalTitle').textContent='新しいシート';
+  document.getElementById('newSheetName').value='';document.getElementById('newSheetStart').value=TODAY();
+  document.getElementById('editSheetId').value='';
+  document.getElementById('st-28').classList.add('selected');document.getElementById('st-21').classList.remove('selected');
+  document.getElementById('saveSheetBtn').textContent='開始する';
+  populateSheetMedSelector('');
+  openModal('addSheetModal');
+}
+function selectSheetType(n){selectedSheetType=n;document.getElementById('st-28').classList.toggle('selected',n===28);document.getElementById('st-21').classList.toggle('selected',n===21);}
+function saveSheet(){
+  const name=document.getElementById('newSheetName').value.trim();if(!name){alert('シート名を入力してください');return;}
+  const startDate=document.getElementById('newSheetStart').value;if(!startDate){alert('開始日を選択してください');return;}
+  const linkedMedId=document.getElementById('sheetLinkedMed').value||'';
+  const editId=document.getElementById('editSheetId').value;
+  if(editId){const sheet=state.sheets.find(s=>s.id===editId);if(sheet){sheet.name=name;sheet.startDate=startDate;sheet.type=selectedSheetType;sheet.linkedMedId=linkedMedId;}}
+  else state.sheets.push({id:'s'+Date.now(),name,type:selectedSheetType,startDate,linkedMedId});
+  saveState();closeModal('addSheetModal');renderPillSheets();
+}
+
+function openNotifModal(){
+  document.getElementById('modalMorningTime').value=state.settings.morningTime;
+  document.getElementById('modalNoonTime').value=state.settings.noonTime||'12:00';
+  document.getElementById('modalNightTime').value=state.settings.nightTime;
+  openModal('notifModal');
+}
+function saveNotifSettings(){
+  state.settings.morningTime=document.getElementById('modalMorningTime').value;
+  state.settings.noonTime=document.getElementById('modalNoonTime').value;
+  state.settings.nightTime=document.getElementById('modalNightTime').value;
+  document.getElementById('morningNotifTime').value=state.settings.morningTime;
+  document.getElementById('noonNotifTime').value=state.settings.noonTime;
+  document.getElementById('nightNotifTime').value=state.settings.nightTime;
+  saveState();scheduleNotifications();closeModal('notifModal');
+}
+function resetToday(){
+  const vd=getViewDate();
+  if(!confirm(`${vd===TODAY()?'今日':vd}のチェックをリセットしますか？`))return;
+  state.checks[vd]={};saveState();renderToday();
+}
+function clearAllData(){lsRemove('okusuri-v3');location.reload();}
+
+/* ══ SW通知スケジュール送信 ══ */
+// SWへ通知スケジュールを保存（LocalStorage経由 - SWが直接読める）
+function syncNotificationsToSW(){
+  if(!state.settings.notifEnabled||Notification.permission!=='granted')return;
+  const times=[];
+  if(state.meds.some(m=>m.timing==='morning'))
+    times.push({time:state.settings.morningTime,msg:'朝の薬を飲む時間です'});
+  if(state.meds.some(m=>m.timing==='noon'))
+    times.push({time:state.settings.noonTime||'12:00',msg:'昼の薬を飲む時間です'});
+  if(state.meds.some(m=>m.timing==='night'))
+    times.push({time:state.settings.nightTime,msg:'夜の薬を飲む時間です'});
+  if(!times.length)return;
+  // LocalStorageにも保存（SWがperiodicSyncで起きたとき用）
+  try{ localStorage.setItem('kusuri-notif-times', JSON.stringify(times)); }catch(e){}
+  // postMessageでも送信
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.ready.then(reg=>{
+      const sw=reg.active||reg.waiting;
+      if(sw) sw.postMessage({type:'SCHEDULE',times});
+    });
+  }
+}
+
+// Periodic Background Sync を登録
+async function registerPeriodicSync(){
+  if(!('serviceWorker' in navigator))return;
+  try{
+    const reg = await navigator.serviceWorker.ready;
+    if('periodicSync' in reg){
+      const status = await navigator.permissions.query({name:'periodic-background-sync'});
+      if(status.state==='granted'){
+        await reg.periodicSync.register('kusuri-check',{minInterval: 60*60*1000}); // 1時間ごと
+        console.log('[App] Periodic sync registered');
+      }
+    }
+  }catch(e){ console.log('[App] periodicSync not available:', e); }
+}
+
+/* ══ INIT ══ */
+loadState();
+applyTheme(state.settings.theme||'warm-gray');
+initPinSystem();
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').then(reg=>{
+    console.log('[App] SW registered');
+    navigator.serviceWorker.addEventListener('message', e=>{
+      if(!e.data)return;
+      if(e.data.type==='REQUEST_RESCHEDULE') syncNotificationsToSW();
+    });
+    return navigator.serviceWorker.ready;
+  }).then(()=>{
+    if(state.settings.notifEnabled){
+      syncNotificationsToSW();
+      registerPeriodicSync();
+    }
+  }).catch(e=>console.log('[App] SW error:',e));
+}
+</script>
+</body>
+</html>
